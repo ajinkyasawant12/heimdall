@@ -301,10 +301,22 @@
       background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(8px);
       border: 1px solid #38bdf8; border-radius: var(--r-lg); padding: 12px 14px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.25);
-      max-width: 300px; display: none; transform: translate(-50%, -100%); margin-top: -14px;
+      max-width: 300px; display: none; transition: opacity 0.15s ease-out;
     }
-    .stark-tooltip.active { display: block; animation: tooltipIn 0.15s ease-out; }
-    @keyframes tooltipIn { from { opacity: 0; transform: translate(-50%, -95%); } to { opacity: 1; transform: translate(-50%, -100%); } }
+    .stark-tooltip.active { display: block; }
+
+    /* Stark Tech Toast Notification */
+    .stark-toast {
+      position: fixed; top: 20px; right: 24px; z-index: 9999;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px);
+      border: 1px solid #10b981; border-radius: var(--r-md);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 18px rgba(16, 185, 129, 0.3);
+      padding: 12px 18px; color: #ffffff; font-family: var(--sw-mono); font-size: 12px;
+      display: flex; align-items: center; gap: 12px;
+      opacity: 0; transform: translateY(-12px); transition: all 0.25s ease-out;
+      pointer-events: none;
+    }
+    .stark-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
     /* VERIFICATION GATE VIEW */
     .verifier-pane { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
@@ -366,10 +378,10 @@
         <!-- Dashboard Session State Control: Live/Last Run vs New Run (Fresh Session) -->
         <div class="session-state-control" role="group" aria-label="Dashboard Session State">
           <span class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider pl-2 pr-1">Session:</span>
-          <button id="btn-session-historical" onclick="setSessionState('historical')" class="session-btn active" title="Historical verified audit trajectory (itr-wala 8 messages)">
+          <button id="btn-session-historical" onclick="setSessionState('historical')" class="session-btn active" title="Historical verified audit trajectory (itr-wala). Preference saved for startup.">
             <span class="dot-historical"></span> Live / Last Run
           </button>
-          <button id="btn-session-fresh" onclick="setSessionState('fresh')" class="session-btn fresh" title="Interactive blank session with live simulation trigger">
+          <button id="btn-session-fresh" onclick="setSessionState('fresh')" class="session-btn fresh" title="Interactive blank session with live simulation triggers. Preference saved for startup.">
             <span class="dot-fresh"></span> New Run (Fresh Session)
           </button>
         </div>
@@ -1075,6 +1087,7 @@
     // 3. Session Switching Engine
     function setSessionState(mode) {
       currentSession = mode;
+      try { localStorage.setItem('heimdall_session_mode', mode); } catch (e) {}
       const btnHist = document.getElementById('btn-session-historical');
       const btnFresh = document.getElementById('btn-session-fresh');
       const freshBanner = document.getElementById('fresh-session-banner');
@@ -1106,11 +1119,9 @@
         freshBanner.classList.remove('hidden');
         titleEl.innerText = 'Fresh Swarm Session · Ready for Target Ingestion';
 
-        if (ACTIVE_MESSAGES === HISTORICAL_MESSAGES || ACTIVE_MESSAGES.length === 8) {
-          ACTIVE_MESSAGES = [];
-          ACTIVE_LEDGER = [];
-          replayIdx = 0;
-        }
+        ACTIVE_MESSAGES = [];
+        ACTIVE_LEDGER = [];
+        replayIdx = 0;
       }
 
       updateTabBadges();
@@ -1232,9 +1243,28 @@
       isSimulationRunning = false;
     }
 
+    function showStarkToast(title, body) {
+      let toast = document.getElementById('stark-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'stark-toast';
+        toast.className = 'stark-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+        <div>
+          <div class="font-bold text-emerald-300 text-xs">${title}</div>
+          <div class="text-[11px] text-zinc-300">${body}</div>
+        </div>
+      `;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+
     function triggerFastpathTrajectory() {
       const target = document.getElementById('fresh-target-select').value;
-      alert(`[⚡ Fastpath Trajectory Cache Hit]\nAST Pattern matched in Merkle WAL for: ${target}\nInstant replay completed in 0.8ms with Ed25519 verification.`);
+      showStarkToast('⚡ Fastpath Trajectory Cache Hit (<0.8ms)', `AST Pattern matched in Merkle WAL for: ${target}. Ed25519 signature valid.`);
       triggerFreshAuditSimulation();
     }
 
@@ -1699,10 +1729,18 @@
 
     // Initialize Dashboard
     window.onload = () => {
-      renderFeed();
-      renderMembersList();
-      renderGraph();
-      renderLedgerTable();
+      let initialMode = 'historical';
+      try {
+        const urlParam = new URLSearchParams(window.location.search).get('session');
+        if (urlParam === 'fresh' || urlParam === 'historical') {
+          initialMode = urlParam;
+        } else {
+          const stored = localStorage.getItem('heimdall_session_mode');
+          if (stored === 'fresh' || stored === 'historical') initialMode = stored;
+        }
+      } catch (e) {}
+
+      setSessionState(initialMode);
     };
   </script>
 </body>

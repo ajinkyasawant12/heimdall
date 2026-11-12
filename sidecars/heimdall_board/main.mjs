@@ -33,6 +33,19 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url.pathname.startsWith('/assets/')) {
+    const assetPath = path.resolve(__dirname, '..', '..', url.pathname.slice(1));
+    const localAssetPath = path.resolve(__dirname, url.pathname.slice(1));
+    const targetAsset = fs.existsSync(assetPath) ? assetPath : (fs.existsSync(localAssetPath) ? localAssetPath : null);
+    if (targetAsset) {
+      const ext = path.extname(targetAsset).toLowerCase();
+      const mime = ext === '.svg' ? 'image/svg+xml' : (ext === '.jpg' || ext === '.jpeg') ? 'image/jpeg' : ext === '.png' ? 'image/png' : 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': mime });
+      res.end(fs.readFileSync(targetAsset));
+      return;
+    }
+  }
+
   if (url.pathname === '/api/status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status: 'ONLINE', plugin: 'heimdall', version: '2.0.0' }));
