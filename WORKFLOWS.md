@@ -46,3 +46,17 @@ From MCP:
   }
 }
 ```
+
+
+---
+
+## 4. `template-cloudflare-harness-audit` (Cloudflare 6-Phase & Google Harness² Autonomous CRS)
+
+Integrates Cloudflare's 6-Phase Security Audit methodology with Google Research Harness² adaptive mutation and terminal verification gates:
+
+- **Phase 1: Architecture Mapping & Recon (`@recon`):** Discovers entry points, trust boundaries, and slices byte-exact AST sinks.
+- **Phase 2: Coverage-Led Hunting (`@recon`):** Partitions the target repository into isolated audit zones.
+- **Phase 3: The Fight / SMT Adversarial Validation (`@prover`):** Evaluates Z3 SMT-LIB2 invariants to mathematically challenge finding candidates. If SAT witness is found, finding is confirmed; if UNSAT, it is eliminated as an unsound false positive.
+- **Phase 4: Surgical Remediation (`@patcher`):** Synthesizes minimal AST transformations enforcing DARPA AIxCC anti-cheat rules (0 deleted symbols, no dummy bypasses).
+- **Phase 5: Post-Swarm OpenShell Sandbox Verification (`@verifier`):** Mandatory quality gate running inside an isolated sandbox. Executes transient catching tests and full baseline test suites (313/313 pass).
+- **Phase 6: Cryptographic Merkle Notarization (`@auditor`):** Issues Ed25519-signed verification tickets and commits state blocks to the SQLite WAL Merkle ledger.

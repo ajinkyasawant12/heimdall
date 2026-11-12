@@ -8,8 +8,14 @@
  */
 
 import { createServer, IncomingMessage, ServerResponse } from "node:http";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { FindingsStore, LearningStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const findingsStore = new FindingsStore();
 const learningStore = new LearningStore();
@@ -885,7 +891,19 @@ export function startServer() {
       return;
     }
 
-    if (url.pathname === "/" || url.pathname === "/index.html") {
+    if (url.pathname === "/" || url.pathname === "/index.html" || url.pathname === "/swarm") {
+      const swarmHtml = path.resolve(__dirname, "../heimdall_swarm_board.html");
+      if (fs.existsSync(swarmHtml)) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(fs.readFileSync(swarmHtml, "utf-8"));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(CONTROL_ROOM_HTML);
+      return;
+    }
+
+    if (url.pathname === "/theater") {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(CONTROL_ROOM_HTML);
       return;
