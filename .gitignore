@@ -13,3 +13,4 @@ Thumbs.db
 # Temporary test outputs
 tests/**/actual_*
 .cache/
+.aegis/

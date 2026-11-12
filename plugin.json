@@ -1,0 +1,49 @@
+{
+  "name": "heimdall",
+  "displayName": "Heimdall CRS",
+  "version": "2.0.0",
+  "description": "Autonomous AI Security Harness & Multi-Agent Swarm with Iron Man suit personas, formal Z3 reachability proofs, surgical vulnerability remediation, OpenShell verification gates, and interactive live control room.",
+  "logo": "assets/logo.svg",
+  "author": {
+    "name": "Heimdall Security Project"
+  },
+  "homepage": "https://github.com/ajinkyasawant12/heimdall",
+  "repository": "https://github.com/ajinkyasawant12/heimdall",
+  "license": "Apache-2.0",
+  "suggestedPrompts": [
+    "/swarm to debug and audit all new code with the multi-agent squad",
+    "/boost to find new features or enhance existing resources and architectures",
+    "Open the Heimdall live board dashboard on port 4040",
+    "Run verification gate and notarize Merkle receipt"
+  ],
+  "keywords": [
+    "security",
+    "cyber-reasoning-system",
+    "swarm",
+    "ironman",
+    "formal-verification",
+    "automated-patching",
+    "vulnerability-research",
+    "merkle-ledger",
+    "ast-slicing",
+    "z3-smt"
+  ],
+  "skills": [
+    "skills/heimdall-swarm",
+    "skills/heimdall-boost"
+  ],
+  "agents": [
+    "agents/coordinator.md",
+    "agents/recon.md",
+    "agents/prover.md",
+    "agents/patcher.md",
+    "agents/verifier.md",
+    "agents/auditor.md",
+    "agents/monitor.md"
+  ],
+  "sidecars": {
+    "heimdall_board": {
+      "path": "sidecars/heimdall_board"
+    }
+  }
+}

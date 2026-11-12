@@ -1,0 +1,24 @@
+{
+  "command": "node",
+  "args": ["main.mjs"],
+  "env": {
+    "PORT": "4040"
+  },
+  "restart_policy": "always",
+  "display_name": "Heimdall Swarm",
+  "description": "Live view of the native Heimdall CRS swarm board, Iron Man avatars, session state manager, and interactive @mention graph.",
+  "has_web_ui": true,
+  "agent_permissions": {
+    "allows_user_interactions": false
+  },
+  "ui_config": {
+    "display_name": "Heimdall Swarm",
+    "views": [
+      {
+        "path": "/",
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE",
+        "title": "Heimdall Swarm"
+      }
+    ]
+  }
+}

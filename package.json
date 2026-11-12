@@ -13,6 +13,7 @@
     "cli": "node packages/cli/dist/index.js",
     "mcp": "node packages/mcp/dist/index.js",
     "serve": "node packages/dashboard/dist/server.js",
+    "package:plugin": "node scripts/package-plugin.mjs",
     "demo": "node packages/cli/dist/index.js auto ./benchmarks/demo-targets/order-api --demo-fast"
   },
   "keywords": [
