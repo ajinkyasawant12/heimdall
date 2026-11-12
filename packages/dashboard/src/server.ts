@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Port 4040 Live Verification Theater & Hackathon Control Room
  * Real-time SSE streaming for:
@@ -901,6 +901,20 @@ export function startServer() {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(CONTROL_ROOM_HTML);
       return;
+    }
+
+    if (url.pathname.startsWith("/assets/")) {
+      const rel = url.pathname.replace("/assets/", "");
+      const p1 = path.resolve(__dirname, "../../../assets", rel);
+      const p2 = path.resolve(__dirname, "../../assets", rel);
+      const target = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+      if (target) {
+        const ext = path.extname(target).toLowerCase();
+        const mime = ext === ".svg" ? "image/svg+xml" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : "application/octet-stream";
+        res.writeHead(200, { "Content-Type": mime });
+        res.end(fs.readFileSync(target));
+        return;
+      }
     }
 
     if (url.pathname === "/theater") {

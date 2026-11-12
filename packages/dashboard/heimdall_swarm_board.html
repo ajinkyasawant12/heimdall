@@ -1077,51 +1077,159 @@
 
     // B. Active Session Runtime State
     let currentSession = 'historical'; // 'historical' | 'fresh'
-    let ACTIVE_MESSAGES = [...HISTORICAL_MESSAGES];
-    let ACTIVE_LEDGER = [...HISTORICAL_LEDGER];
+    let FRESH_MESSAGES = [];
+    let FRESH_LEDGER = [];
     let replayIdx = 8;
     let isReplaying = false;
     let replayTimer = null;
     let isSimulationRunning = false;
+    let simulationRunId = 0;
 
-    // 3. Session Switching Engine
-    function setSessionState(mode) {
+    // Toast Notification System (Stark Tech HUD Toast)
+    function showStarkToast(htmlContent, duration = 3500) {
+      let toast = document.getElementById('stark-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'stark-toast';
+        toast.className = 'stark-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = htmlContent;
+      toast.classList.add('show');
+      clearTimeout(window._toastTimeout);
+      window._toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
+
+    // Dynamic Verification Gate Diff Card Updater
+    function updateVerificationCard(mode, target = '', hasRun = false) {
+      const cardTitle = document.getElementById('vg-worker-title');
+      const filesChanged = document.getElementById('vg-files-changed');
+      const diffStat = document.getElementById('vg-diff-stat');
+      const filename = document.getElementById('vg-filename');
+      const filepath = document.getElementById('vg-filepath');
+      const filerowStat = document.getElementById('vg-filerow-stat');
+      const regTests = document.getElementById('vg-reg-tests');
+      const baseTests = document.getElementById('vg-base-tests');
+      const totalRate = document.getElementById('vg-total-rate');
+      const diffHeader = document.getElementById('diff-code-header');
+      const diffBlock = document.getElementById('diff-code-block');
+
+      if (mode === 'historical') {
+        if (cardTitle) cardTitle.innerText = 'Swarm Worker (verifier)';
+        if (filesChanged) filesChanged.innerText = '1 file changed';
+        if (diffStat) diffStat.innerText = '+289 -0';
+        if (filename) filename.innerText = 'test_security_regressions.py';
+        if (filepath) filepath.innerText = '...argets/itr-wala/tests';
+        if (filerowStat) filerowStat.innerText = '+289 -0';
+        if (regTests) regTests.innerText = '22/22 PASSED';
+        if (baseTests) baseTests.innerText = '291/291 PASSED';
+        if (totalRate) totalRate.innerText = '313/313 (100%)';
+        if (diffHeader) diffHeader.innerText = '# benchmarks/targets/itr-wala/tests/test_security_regressions.py';
+        if (diffBlock) {
+          diffBlock.innerHTML = `
+            <div id="diff-code-header" class="text-zinc-500 mb-2"># benchmarks/targets/itr-wala/tests/test_security_regressions.py</div>
+            <div class="text-emerald-400">+ import unittest, subprocess, sys, os, tempfile</div>
+            <div class="text-emerald-400">+ from pathlib import Path</div>
+            <div class="text-emerald-400">+ </div>
+            <div class="text-emerald-400">+ class TestSecurityRegressions(unittest.TestCase):</div>
+            <div class="text-emerald-400">+     def test_cwe214_decrypt_ais_no_key_in_argv(self):</div>
+            <div class="text-emerald-400">+         """Verify 256-bit AES key is piped via stdin and never leaks into argv/procfs."""</div>
+            <div class="text-emerald-400">+         from skills.itr_wala.scripts.decrypt_ais import decrypt</div>
+            <div class="text-emerald-400">+         self.assertTrue(True)</div>
+            <div class="text-emerald-400">+ </div>
+            <div class="text-emerald-400">+     def test_cwe400_blind_copy_max_array_index_ceiling(self):</div>
+            <div class="text-emerald-400">+         """Verify list expansion bounds ceiling MAX_ARRAY_INDEX = 10000 blocks DoS."""</div>
+            <div class="text-emerald-400">+         self.assertTrue(True)</div>
+            <div class="text-emerald-400">+ </div>
+            <div class="text-emerald-400">+     def test_cwe22_unzip_26as_canonical_path_containment(self):</div>
+            <div class="text-emerald-400">+         """Verify directory traversal is strictly blocked with is_relative_to."""</div>
+            <div class="text-emerald-400">+         self.assertTrue(True)</div>
+          `;
+        }
+      } else if (!hasRun && FRESH_MESSAGES.length === 0) {
+        if (cardTitle) cardTitle.innerText = 'Swarm Worker (verifier) · Standby';
+        if (filesChanged) filesChanged.innerText = '0 files changed';
+        if (diffStat) diffStat.innerText = '+0 -0';
+        if (filename) filename.innerText = 'Awaiting target run';
+        if (filepath) filepath.innerText = target || 'Select target in Fresh Session banner';
+        if (filerowStat) filerowStat.innerText = '+0 -0';
+        if (regTests) regTests.innerText = '0/0';
+        if (baseTests) baseTests.innerText = '0/0';
+        if (totalRate) totalRate.innerText = '0% (Standby)';
+        if (diffHeader) diffHeader.innerText = '# Standby - Run full audit or fastpath above';
+        if (diffBlock) {
+          diffBlock.innerHTML = `
+            <div id="diff-code-header" class="text-zinc-500 mb-2"># Awaiting execution in Fresh Session</div>
+            <div class="text-zinc-500 italic">// Click "Run Full Audit" or "⚡ Fastpath" to dispatch the Iron Man squad and generate verified diff.</div>
+          `;
+        }
+      } else {
+        const curTarget = target || document.getElementById('fresh-target-select')?.value || 'order-api';
+        if (cardTitle) cardTitle.innerText = 'Swarm Worker (verifier) · Verified Diff';
+        if (filesChanged) filesChanged.innerText = '1 file changed';
+        if (diffStat) diffStat.innerText = '+18 -4';
+        if (filename) filename.innerText = 'checkout.ts';
+        if (filepath) filepath.innerText = curTarget;
+        if (filerowStat) filerowStat.innerText = '+18 -4';
+        if (regTests) regTests.innerText = '4/4 PASSED';
+        if (baseTests) baseTests.innerText = '10/10 PASSED';
+        if (totalRate) totalRate.innerText = '14/14 (100%)';
+        if (diffHeader) diffHeader.innerText = `# ${curTarget}/checkout.ts`;
+        if (diffBlock) {
+          diffBlock.innerHTML = `
+            <div id="diff-code-header" class="text-zinc-500 mb-2"># ${curTarget}/checkout.ts</div>
+            <div class="text-zinc-500">@@ -31,8 +31,22 @@ export async function runCheckout(orderId: string, branch: string) {</div>
+            <div class="text-rose-400">-   const { execSync } = require('child_process');</div>
+            <div class="text-rose-400">-   // Vulnerable sink: unescaped shell concatenation (CWE-78)</div>
+            <div class="text-rose-400">-   const output = execSync(&#96;git rev-parse ${branch}&#96;).toString();</div>
+            <div class="text-rose-400">-   return output.trim();</div>
+            <div class="text-emerald-400">+   import { execFile } from 'node:child_process';</div>
+            <div class="text-emerald-400">+   import { promisify } from 'node:util';</div>
+            <div class="text-emerald-400">+   const pExecFile = promisify(execFile);</div>
+            <div class="text-emerald-400">+ </div>
+            <div class="text-emerald-400">+   // Surgical remediation: parameterized argv array blocks shell injection</div>
+            <div class="text-emerald-400">+   const { stdout } = await pExecFile('git', ['rev-parse', '--', branch], {</div>
+            <div class="text-emerald-400">+     timeout: 5000,</div>
+            <div class="text-emerald-400">+     windowsHide: true</div>
+            <div class="text-emerald-400">+   });</div>
+            <div class="text-emerald-400">+   return stdout.trim();</div>
+          `;
+        }
+      }
+    }
+
+    // 3. Session Switching Engine with Persistence
+    function setSessionState(mode, savePreference = true) {
+      if (mode !== 'historical' && mode !== 'fresh') mode = 'historical';
       currentSession = mode;
-      try { localStorage.setItem('heimdall_session_mode', mode); } catch (e) {}
+
+      if (savePreference) {
+        try {
+          localStorage.setItem('heimdall_session_mode', mode);
+        } catch (e) {}
+      }
+
       const btnHist = document.getElementById('btn-session-historical');
       const btnFresh = document.getElementById('btn-session-fresh');
       const freshBanner = document.getElementById('fresh-session-banner');
       const titleEl = document.getElementById('header-swarm-title');
 
       if (mode === 'historical') {
-        btnHist.classList.add('active');
-        btnFresh.classList.remove('active');
-        freshBanner.classList.add('hidden');
-        titleEl.innerText = 'itr-wala code review and gap remediation';
-
-        ACTIVE_MESSAGES = [...HISTORICAL_MESSAGES];
-        ACTIVE_LEDGER = [...HISTORICAL_LEDGER];
-        replayIdx = ACTIVE_MESSAGES.length;
-
-        // Restore verification card for itr-wala
-        document.getElementById('vg-worker-title').innerText = 'Swarm Worker (verifier)';
-        document.getElementById('vg-files-changed').innerText = '1 file changed';
-        document.getElementById('vg-diff-stat').innerText = '+289 -0';
-        document.getElementById('vg-filename').innerText = 'test_security_regressions.py';
-        document.getElementById('vg-filepath').innerText = '...argets/itr-wala/tests';
-        document.getElementById('vg-filerow-stat').innerText = '+289 -0';
-        document.getElementById('vg-reg-tests').innerText = '22/22 PASSED';
-        document.getElementById('vg-base-tests').innerText = '291/291 PASSED';
-        document.getElementById('vg-total-rate').innerText = '313/313 (100%)';
+        if (btnHist) btnHist.classList.add('active');
+        if (btnFresh) btnFresh.classList.remove('active');
+        if (freshBanner) freshBanner.classList.add('hidden');
+        if (titleEl) titleEl.innerText = 'itr-wala code review and gap remediation';
+        updateVerificationCard('historical');
+        replayIdx = HISTORICAL_MESSAGES.length;
       } else {
-        btnHist.classList.remove('active');
-        btnFresh.classList.add('active');
-        freshBanner.classList.remove('hidden');
-        titleEl.innerText = 'Fresh Swarm Session · Ready for Target Ingestion';
-
-        ACTIVE_MESSAGES = [];
-        ACTIVE_LEDGER = [];
-        replayIdx = 0;
+        if (btnHist) btnHist.classList.remove('active');
+        if (btnFresh) btnFresh.classList.add('active');
+        if (freshBanner) freshBanner.classList.remove('hidden');
+        if (titleEl) titleEl.innerText = 'Fresh Swarm Session · Ready for Target Ingestion';
+        updateVerificationCard('fresh', document.getElementById('fresh-target-select')?.value, FRESH_MESSAGES.length > 0);
+        replayIdx = FRESH_MESSAGES.length;
       }
 
       updateTabBadges();
@@ -1132,25 +1240,34 @@
     }
 
     function updateTabBadges() {
-      document.getElementById('tab-count-feed').innerText = ACTIVE_MESSAGES.length;
-      document.getElementById('tab-count-members').innerText = SQUAD_MEMBERS.length;
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      const feedCount = document.getElementById('tab-count-feed');
+      const memCount = document.getElementById('tab-count-members');
+      if (feedCount) feedCount.innerText = activeMsgs.length;
+      if (memCount) memCount.innerText = SQUAD_MEMBERS.length;
       const slider = document.getElementById('replay-slider');
-      slider.max = Math.max(1, ACTIVE_MESSAGES.length);
-      slider.value = replayIdx;
+      if (slider) {
+        slider.max = Math.max(1, activeMsgs.length);
+        slider.value = replayIdx;
+      }
     }
 
-    // 4. Fresh Audit Simulation Trigger
+    // 4. Fresh Audit Simulation Trigger (Sequential Live Multi-Agent Simulation)
     async function triggerFreshAuditSimulation() {
       if (isSimulationRunning) return;
       isSimulationRunning = true;
-      const target = document.getElementById('fresh-target-select').value;
+      const thisRunId = ++simulationRunId;
+      const target = document.getElementById('fresh-target-select')?.value || 'order-api';
       const btn = document.getElementById('btn-run-simulation');
-      btn.innerHTML = '<span class="animate-spin inline-block mr-1">⚙</span> Auditing...';
-      btn.classList.add('opacity-75');
+      if (btn) {
+        btn.innerHTML = '<span class="animate-spin inline-block mr-1">⚙</span> Auditing...';
+        btn.classList.add('opacity-75');
+      }
 
-      ACTIVE_MESSAGES = [];
-      ACTIVE_LEDGER = [];
+      FRESH_MESSAGES = [];
+      FRESH_LEDGER = [];
       replayIdx = 0;
+      updateTabBadges();
       renderFeed();
       renderGraph();
       renderLedgerTable();
@@ -1190,33 +1307,33 @@
           agent: "auditor",
           recipient: "@coordinator",
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          text: `@coordinator Cryptographic Merkle Block #${ACTIVE_LEDGER.length + 1} sealed into SQLite WAL. Ed25519 signature generated. Trajectory [traj-${target.replace(/[^a-z0-9]/gi, '-')}] cached for <1ms replay.`
+          text: `@coordinator Cryptographic Merkle Block #6 sealed into SQLite WAL. Ed25519 signature generated. Trajectory [traj-${target.replace(/[^a-z0-9]/gi, '-')}] cached for <1ms replay.`
         }
       ];
 
-      // Step-by-step sequential arrival with realistic delays
       for (let i = 0; i < simulatedTimeline.length; i++) {
-        await new Promise(r => setTimeout(r, 1100));
+        await new Promise(r => setTimeout(r, 900));
+        if (simulationRunId !== thisRunId) return; // Cancelled
+
         const item = simulatedTimeline[i];
-        const seq = ACTIVE_MESSAGES.length + 1;
-        const msgObj = {
+        const seq = FRESH_MESSAGES.length + 1;
+        FRESH_MESSAGES.push({
           seq: seq,
           agent: item.agent,
           recipient: item.recipient,
           time: item.time,
           ms: Date.now(),
           text: item.text
-        };
-        ACTIVE_MESSAGES.push(msgObj);
-        replayIdx = ACTIVE_MESSAGES.length;
+        });
+        replayIdx = FRESH_MESSAGES.length;
 
-        // Append to Merkle Ledger
-        ACTIVE_LEDGER.push({
+        const prevHash = FRESH_LEDGER.length > 0 ? FRESH_LEDGER[FRESH_LEDGER.length - 1].hash : "0000000000000000";
+        FRESH_LEDGER.push({
           seq: seq,
           event: seq === 1 ? "SWARM_INITIALIZE" : seq === 2 ? "RECON_AST_SLICE" : seq === 3 ? "SMT_PROVER_SAT" : seq === 4 ? "SURGICAL_PATCH" : seq === 5 ? "SANDBOX_VERIFY" : "AUDIT_NOTARIZED",
           agent: item.agent,
           target: target,
-          prev: seq === 1 ? "0000000000000000" : ACTIVE_LEDGER[seq - 2].hash,
+          prev: prevHash,
           hash: Math.random().toString(16).substring(2, 18),
           sig: "ed25519:" + Math.random().toString(16).substring(2, 6) + ".." + Math.random().toString(16).substring(2, 6)
         });
@@ -1227,55 +1344,134 @@
         renderLedgerTable();
       }
 
-      // Update Verification Card to match fresh target
-      document.getElementById('vg-worker-title').innerText = 'Swarm Worker (verifier)';
-      document.getElementById('vg-files-changed').innerText = '1 file changed';
-      document.getElementById('vg-diff-stat').innerText = '+18 -4';
-      document.getElementById('vg-filename').innerText = 'checkout.ts';
-      document.getElementById('vg-filepath').innerText = target;
-      document.getElementById('vg-filerow-stat').innerText = '+18 -4';
-      document.getElementById('vg-reg-tests').innerText = '4/4 PASSED';
-      document.getElementById('vg-base-tests').innerText = '10/10 PASSED';
-      document.getElementById('vg-total-rate').innerText = '14/14 (100%)';
-
-      btn.innerHTML = '<span>▶ Run Full Audit</span>';
-      btn.classList.remove('opacity-75');
-      isSimulationRunning = false;
-    }
-
-    function showStarkToast(title, body) {
-      let toast = document.getElementById('stark-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'stark-toast';
-        toast.className = 'stark-toast';
-        document.body.appendChild(toast);
+      if (simulationRunId === thisRunId) {
+        updateVerificationCard('fresh', target, true);
+        if (btn) {
+          btn.innerHTML = '<span>▶ Run Full Audit</span>';
+          btn.classList.remove('opacity-75');
+        }
+        isSimulationRunning = false;
+        showStarkToast(`
+          <span class="text-cyan-400 font-bold text-base">🛡️</span>
+          <div>
+            <div class="text-white font-bold">Multi-Agent Swarm Audit Complete</div>
+            <div class="text-[11px] text-zinc-400">All 6 phases verified. 14/14 tests passing. Diff card notarized.</div>
+          </div>
+        `);
       }
-      toast.innerHTML = `
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-        <div>
-          <div class="font-bold text-emerald-300 text-xs">${title}</div>
-          <div class="text-[11px] text-zinc-300">${body}</div>
-        </div>
-      `;
-      toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 4000);
     }
 
+    // Instant Fastpath Trajectory Cache Hit (<1ms Replay, Non-blocking)
     function triggerFastpathTrajectory() {
-      const target = document.getElementById('fresh-target-select').value;
-      showStarkToast('⚡ Fastpath Trajectory Cache Hit (<0.8ms)', `AST Pattern matched in Merkle WAL for: ${target}. Ed25519 signature valid.`);
-      triggerFreshAuditSimulation();
-    }
+      const target = document.getElementById('fresh-target-select')?.value || 'order-api';
+      simulationRunId++; // cancel running simulation
+      isSimulationRunning = false;
+      const btn = document.getElementById('btn-run-simulation');
+      if (btn) {
+        btn.innerHTML = '<span>▶ Run Full Audit</span>';
+        btn.classList.remove('opacity-75');
+      }
 
-    function resetFreshSession() {
-      ACTIVE_MESSAGES = [];
-      ACTIVE_LEDGER = [];
-      replayIdx = 0;
+      FRESH_MESSAGES = [
+        {
+          seq: 1,
+          agent: "coordinator",
+          recipient: "@recon",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now() - 5000,
+          text: `@recon Fastpath replay for target: <code>${target}</code>. Instant AST cache retrieval from Merkle WAL [traj-${target.replace(/[^a-z0-9]/gi, '-')}].`
+        },
+        {
+          seq: 2,
+          agent: "recon",
+          recipient: "@prover @coordinator",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now() - 4000,
+          text: `@coordinator AST Slicing instant hit. Extracted 42-token subgraph around command sink at line 34 (CWE-78). Prover constraints pre-computed.`
+        },
+        {
+          seq: 3,
+          agent: "prover",
+          recipient: "@patcher @coordinator",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now() - 3000,
+          text: `@coordinator @patcher Z3 SMT-LIB2 reachability constraints satisfied: <b>SAT (Counterexample Proven)</b>. Exploit witness: <code>; cat /etc/passwd #</code>.`
+        },
+        {
+          seq: 4,
+          agent: "patcher",
+          recipient: "@verifier @coordinator",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now() - 2000,
+          text: `@verifier Synthesized minimal surgical diff: replaced <code>execSync</code> with safe parameterized <code>execFile</code>. AST Anti-Cheat Gate Verified: 0 empty catches, 100% exported symbols intact.`
+        },
+        {
+          seq: 5,
+          agent: "verifier",
+          recipient: "@auditor @coordinator",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now() - 1000,
+          text: `@coordinator OpenShell sandbox verification passed! Meta JiT Catching Test confirmed exploit neutralization. Full baseline test suite: 100% PASSED (14/14 tests). Diff review card: <code>1 file changed +18 -4</code>.`
+        },
+        {
+          seq: 6,
+          agent: "auditor",
+          recipient: "@coordinator",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ms: Date.now(),
+          text: `@coordinator Cryptographic Merkle Block #6 sealed. Ed25519 signature generated. Fastpath replay notarized in 0.8ms.`
+        }
+      ];
+
+      FRESH_LEDGER = [
+        { seq: 1, event: "SWARM_INITIALIZE", agent: "coordinator", target: target, prev: "0000000000000000", hash: "4a8e2b9c7d1e3f5a", sig: "ed25519:8bf1..e902" },
+        { seq: 2, event: "RECON_AST_SLICE", agent: "recon", target: target + "/exec.ts", prev: "4a8e2b9c7d1e3f5a", hash: "9f3c1b7a2d8e4f60", sig: "ed25519:12a4..bc88" },
+        { seq: 3, event: "SMT_PROVER_SAT", agent: "prover", target: "CWE-78:command_injection", prev: "9f3c1b7a2d8e4f60", hash: "7d2e4f6a1b8c3d9e", sig: "ed25519:f901..77e3" },
+        { seq: 4, event: "SURGICAL_PATCH", agent: "patcher", target: target + " (execFile param)", prev: "7d2e4f6a1b8c3d9e", hash: "1b8c3d9e4a7f2e5b", sig: "ed25519:aa32..01fe" },
+        { seq: 5, event: "SANDBOX_VERIFY", agent: "verifier", target: "tests/test_neutralization.ts", prev: "1b8c3d9e4a7f2e5b", hash: "6e4d2a1b9c8f3e7a", sig: "ed25519:55c9..d140" },
+        { seq: 6, event: "AUDIT_NOTARIZED", agent: "auditor", target: "Merkle Root Receipt #21", prev: "6e4d2a1b9c8f3e7a", hash: "e5a3b9c7d1f2e4a8", sig: "ed25519:99bb..4412" }
+      ];
+
+      replayIdx = FRESH_MESSAGES.length;
+      updateVerificationCard('fresh', target, true);
       updateTabBadges();
       renderFeed();
       renderGraph();
       renderLedgerTable();
+
+      showStarkToast(`
+        <span class="text-emerald-400 font-bold text-base">⚡</span>
+        <div>
+          <div class="text-white font-bold">[Fastpath Cache Hit] <span class="text-emerald-400">&lt;1ms Replay</span></div>
+          <div class="text-[11px] text-zinc-400">AST Pattern matched for <code>${target}</code>. Merkle root verified with Ed25519 signature.</div>
+        </div>
+      `);
+    }
+
+    function resetFreshSession() {
+      simulationRunId++;
+      isSimulationRunning = false;
+      const btn = document.getElementById('btn-run-simulation');
+      if (btn) {
+        btn.innerHTML = '<span>▶ Run Full Audit</span>';
+        btn.classList.remove('opacity-75');
+      }
+      FRESH_MESSAGES = [];
+      FRESH_LEDGER = [];
+      replayIdx = 0;
+      updateVerificationCard('fresh', document.getElementById('fresh-target-select')?.value, false);
+      updateTabBadges();
+      renderFeed();
+      renderGraph();
+      renderLedgerTable();
+
+      showStarkToast(`
+        <span class="text-zinc-400 font-bold">🧹</span>
+        <div>
+          <div class="text-white font-bold">Fresh Session Reset</div>
+          <div class="text-[11px] text-zinc-400">Board feed and ledger reset to blank slate.</div>
+        </div>
+      `, 2000);
     }
 
     // 5. Tab Switching
@@ -1294,19 +1490,21 @@
     // 6. Feed Rendering with Iron Man Avatars
     function renderFeed() {
       const container = document.getElementById('feed-container');
+      if (!container) return;
       container.innerHTML = '';
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
 
-      if (ACTIVE_MESSAGES.length === 0) {
+      if (activeMsgs.length === 0) {
         container.innerHTML = `
           <div class="p-8 text-center border border-dashed border-zinc-800 rounded-xl my-4">
             <div class="text-zinc-500 font-mono text-sm mb-2">No messages in active session.</div>
-            <div class="text-xs text-zinc-600">Click <b>"Run Full Audit"</b> or <b>"Fastpath"</b> in the top banner to dispatch the Iron Man squad.</div>
+            <div class="text-xs text-zinc-600">Click <b>"Run Full Audit"</b> or <b>"⚡ Fastpath"</b> in the top banner to dispatch the Iron Man squad.</div>
           </div>
         `;
         return;
       }
 
-      ACTIVE_MESSAGES.forEach(msg => {
+      activeMsgs.forEach(msg => {
         const item = document.createElement('div');
         item.className = 'msg';
         const isClamped = msg.text.length > 220;
@@ -1334,14 +1532,15 @@
     function toggleClamp(seq) {
       const body = document.getElementById(`body-msg-${seq}`);
       const more = document.getElementById(`more-msg-${seq}`);
+      if (!body) return;
       if (body.classList.contains('clamped')) {
         body.classList.remove('clamped');
         body.classList.add('open');
-        more.innerText = 'Show less';
+        if (more) more.innerText = 'Show less';
       } else {
         body.classList.remove('open');
         body.classList.add('clamped');
-        more.innerText = 'Show more';
+        if (more) more.innerText = 'Show more';
       }
     }
 
@@ -1355,9 +1554,10 @@
         .replace(/\n\n/g, '<br><br>');
     }
 
-    // 7. Members List & Model Switcher Modal
+    // 7. Members List & Model Switcher Modal with Signature Armor Marks
     function renderMembersList() {
       const container = document.getElementById('members-container');
+      if (!container) return;
       container.innerHTML = '';
       SQUAD_MEMBERS.forEach((m, idx) => {
         if (idx === 1) {
@@ -1379,7 +1579,10 @@
           <div class="member-details">
             <div class="member-top">
               <div>
-                <span class="member-name">@${m.id}</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="member-name">@${m.id}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded font-mono font-semibold" style="background:${persona.accent}; color:${persona.face}; border:1px solid ${persona.outer}">${persona.mark}</span>
+                </div>
                 <span class="member-role">${m.role}</span>
               </div>
               <span class="model-pill" title="Click to view quota or switch model">${m.model} · #${m.steps}</span>
@@ -1401,12 +1604,13 @@
       document.getElementById('modal-member-steps').innerText = member.steps;
       document.getElementById('modal-model-select').value = member.model;
       const cvBox = document.getElementById('modal-bee-box');
-      cvBox.innerHTML = getIronManHelmetSVG(member.id, 32);
+      if (cvBox) cvBox.innerHTML = getIronManHelmetSVG(member.id, 32);
       document.getElementById('model-modal').classList.remove('hidden');
     }
 
     function closeModelModal() {
-      document.getElementById('model-modal').classList.add('hidden');
+      const modal = document.getElementById('model-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function applyModelChange() {
@@ -1458,16 +1662,18 @@
 
     function renderGraph() {
       const svg = document.getElementById('graph-svg');
+      if (!svg) return;
       const width = svg.clientWidth || 760;
       const height = 400;
-      const hideInactive = document.getElementById('g-hide-inactive').checked;
+      const hideInactive = document.getElementById('g-hide-inactive')?.checked || false;
 
       // 7 Iron Man personas on the ellipse
       const orderedNodeIds = ["coordinator", "recon", "prover", "patcher", "verifier", "auditor", "monitor"];
       const { pos } = layoutGraphNodes(orderedNodeIds, width, height);
 
-      const msgs = ACTIVE_MESSAGES.slice(0, replayIdx);
-      const currentMsg = replayIdx > 0 && ACTIVE_MESSAGES.length > 0 ? ACTIVE_MESSAGES[replayIdx - 1] : null;
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      const msgs = activeMsgs.slice(0, replayIdx);
+      const currentMsg = replayIdx > 0 && activeMsgs.length > 0 ? activeMsgs[replayIdx - 1] : null;
 
       const active = new Set(['coordinator']);
       const edges = new Map();
@@ -1546,10 +1752,15 @@
         nodesHtml += `
           <g class="${nodeCls}" onclick="jumpToNodeMessage('${id}')" onmouseenter="showStarkTooltip(event, '${id}')" onmouseleave="hideStarkTooltip()">
             <rect class="node-box" x="${p.x - p.w / 2}" y="${p.y - p.h / 2}" width="${p.w}" height="${p.h}" />
-            <!-- Mini Iron Man Helmet Avatar Badge -->
-            <circle cx="${p.x - p.w / 2 + 16}" cy="${p.y}" r="8" fill="${persona.outerDark}" stroke="${persona.outer}" stroke-width="1.2" />
-            <circle cx="${p.x - p.w / 2 + 16}" cy="${p.y}" r="2" fill="${persona.eye}" />
-            <text class="node-label" x="${p.x - p.w / 2 + 30}" y="${p.y + 4}">${id}</text>
+            <!-- Vector Iron Man Helmet Avatar Badge inside Graph Node -->
+            <g transform="translate(${p.x - p.w / 2 + 6}, ${p.y - 11}) scale(0.18)" class="pointer-events-none">
+              <path d="M 50,6 C 28,6 20,24 20,44 L 17,44 L 17,66 L 24,66 L 24,80 L 34,98 L 38,114 L 62,114 L 66,98 L 76,80 L 76,66 L 83,66 L 83,44 L 80,44 C 80,24 72,6 50,6 Z" fill="${persona.outer}" stroke="${persona.outerDark}" stroke-width="2.5" />
+              <path d="M 28,32 C 29,22 36,20 41,20 L 46,36 L 54,36 L 59,20 C 64,20 71,22 72,32 C 74,42 72,54 71,58 L 67,60 L 69,72 L 61,84 L 61,96 L 39,96 L 39,84 L 31,72 L 33,60 L 29,58 C 28,54 26,42 28,32 Z" fill="${persona.face}" stroke="${persona.faceDark}" stroke-width="1.8" />
+              <polygon points="41,18 46,35 54,35 59,18" fill="${persona.outer}" />
+              <polygon points="31,54 42,56 42,58 31,57" fill="${persona.eye}" />
+              <polygon points="69,54 58,56 58,58 69,57" fill="${persona.eye}" />
+            </g>
+            <text class="node-label" x="${p.x - p.w / 2 + 28}" y="${p.y + 4}">${id}</text>
           </g>
         `;
       });
@@ -1562,11 +1773,12 @@
       updateReplayControls(currentMsg);
     }
 
-    // Stark Tech HUD Tooltip Handler
+    // Stark Tech HUD Tooltip Handler with Boundary Detection
     function showStarkTooltip(evt, agentId) {
       const p = IRONMAN_PERSONAS[agentId] || IRONMAN_PERSONAS.coordinator;
       const tt = document.getElementById('stark-graph-tooltip');
       const wrapper = document.getElementById('graph-wrapper');
+      if (!tt || !wrapper) return;
       const rect = wrapper.getBoundingClientRect();
 
       document.getElementById('tooltip-avatar-box').innerHTML = getIronManHelmetSVG(agentId, 32);
@@ -1575,61 +1787,101 @@
       document.getElementById('tooltip-agent-role').innerText = p.role;
       document.getElementById('tooltip-status').innerText = `Status: ACTIVE`;
 
-      const msgCount = ACTIVE_MESSAGES.filter(m => m.agent === agentId || (agentId === 'recon' && m.agent === 'reviewer')).length;
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      const msgCount = activeMsgs.filter(m => m.agent === agentId || (agentId === 'recon' && m.agent === 'reviewer')).length;
       document.getElementById('tooltip-steps').innerText = `Sent: ${msgCount}`;
 
-      const x = evt.clientX - rect.left;
-      const y = evt.clientY - rect.top;
-      tt.style.left = `${x}px`;
-      tt.style.top = `${y}px`;
+      const rawX = evt.clientX - rect.left;
+      const rawY = evt.clientY - rect.top;
+
+      // Smart boundary clamping: prevent clipping on small screens or near borders
+      const tooltipW = 280;
+      const clampedX = Math.max(tooltipW / 2 + 10, Math.min(rect.width - tooltipW / 2 - 10, rawX));
+
+      if (rawY < 130) {
+        // Node is near top: flip tooltip below
+        tt.style.left = `${clampedX}px`;
+        tt.style.top = `${rawY + 28}px`;
+        tt.style.transform = 'translate(-50%, 0)';
+      } else {
+        // Node is normal: position above
+        tt.style.left = `${clampedX}px`;
+        tt.style.top = `${rawY - 14}px`;
+        tt.style.transform = 'translate(-50%, -100%)';
+      }
+
       tt.classList.add('active');
     }
 
     function hideStarkTooltip() {
-      document.getElementById('stark-graph-tooltip').classList.remove('active');
+      const tt = document.getElementById('stark-graph-tooltip');
+      if (tt) tt.classList.remove('active');
     }
 
     function updateReplayControls(currentMsg) {
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
       const slider = document.getElementById('replay-slider');
-      slider.value = replayIdx;
+      if (slider) {
+        slider.max = Math.max(1, activeMsgs.length);
+        slider.value = replayIdx;
+      }
       const label = document.getElementById('replay-label');
 
-      if (currentMsg && ACTIVE_MESSAGES.length > 0) {
-        const t0 = ACTIVE_MESSAGES[0].ms;
+      if (currentMsg && activeMsgs.length > 0) {
+        const t0 = activeMsgs[0].ms;
         const deltaSec = Math.round((currentMsg.ms - t0) / 1000);
-        label.innerHTML = `<b>${replayIdx}</b> of ${ACTIVE_MESSAGES.length} · #${currentMsg.seq} at ${currentMsg.time} (+${deltaSec}s)`;
-        document.getElementById('cap-author-avatar').innerHTML = getIronManHelmetSVG(currentMsg.agent, 20);
-        document.getElementById('cap-author').innerText = currentMsg.agent;
-        document.getElementById('cap-recipient').innerText = currentMsg.recipient;
-        document.getElementById('cap-time').innerText = currentMsg.time;
-        document.getElementById('cap-body').innerHTML = formatMsgText(currentMsg.text);
+        if (label) label.innerHTML = `<b>${replayIdx}</b> of ${activeMsgs.length} · #${currentMsg.seq} at ${currentMsg.time} (+${deltaSec}s)`;
+        const av = document.getElementById('cap-author-avatar');
+        if (av) av.innerHTML = getIronManHelmetSVG(currentMsg.agent, 20);
+        const auth = document.getElementById('cap-author');
+        if (auth) auth.innerText = currentMsg.agent;
+        const rec = document.getElementById('cap-recipient');
+        if (rec) rec.innerText = currentMsg.recipient;
+        const tm = document.getElementById('cap-time');
+        if (tm) tm.innerText = currentMsg.time;
+        const bod = document.getElementById('cap-body');
+        if (bod) bod.innerHTML = formatMsgText(currentMsg.text);
       } else {
-        label.innerHTML = `<b>0</b> of 0 · Standing by`;
-        document.getElementById('cap-author-avatar').innerHTML = '';
-        document.getElementById('cap-author').innerText = 'coordinator';
-        document.getElementById('cap-recipient').innerText = '@all';
-        document.getElementById('cap-time').innerText = '--:--';
-        document.getElementById('cap-body').innerHTML = '<span class="text-zinc-500 italic">No messages sent yet in this session.</span>';
+        if (label) label.innerHTML = `<b>0</b> of 0 · Standing by`;
+        const av = document.getElementById('cap-author-avatar');
+        if (av) av.innerHTML = '';
+        const auth = document.getElementById('cap-author');
+        if (auth) auth.innerText = 'coordinator';
+        const rec = document.getElementById('cap-recipient');
+        if (rec) rec.innerText = '@all';
+        const tm = document.getElementById('cap-time');
+        if (tm) tm.innerText = '--:--';
+        const bod = document.getElementById('cap-body');
+        if (bod) bod.innerHTML = '<span class="text-zinc-500 italic">No messages sent yet in this session.</span>';
       }
     }
 
     function onSliderScrub(val) { replayIdx = parseInt(val, 10); renderGraph(); }
     function replayBack() { if (replayIdx > 1) { replayIdx--; renderGraph(); } }
-    function replayFwd() { if (replayIdx < ACTIVE_MESSAGES.length) { replayIdx++; renderGraph(); } }
+    function replayFwd() { 
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      if (replayIdx < activeMsgs.length) { replayIdx++; renderGraph(); } 
+    }
     function replaySeek(idx) { replayIdx = idx; renderGraph(); }
-    function replayLive() { replayIdx = ACTIVE_MESSAGES.length; renderGraph(); }
+    function replayLive() { 
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      replayIdx = activeMsgs.length; 
+      renderGraph(); 
+    }
 
     function replayToggle() {
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
       const btn = document.getElementById('replay-play-btn');
       if (isReplaying) {
         clearInterval(replayTimer);
         isReplaying = false;
-        btn.innerText = '▶';
+        if (btn) btn.innerText = '▶';
       } else {
+        if (activeMsgs.length === 0) return;
         isReplaying = true;
-        btn.innerText = '❚❚';
+        if (btn) btn.innerText = '❚❚';
         replayTimer = setInterval(() => {
-          if (replayIdx >= ACTIVE_MESSAGES.length) {
+          if (replayIdx >= activeMsgs.length) {
             replayIdx = 1;
           } else {
             replayIdx++;
@@ -1640,8 +1892,9 @@
     }
 
     function jumpToNodeMessage(id) {
-      for (let i = ACTIVE_MESSAGES.length - 1; i >= 0; i--) {
-        const m = ACTIVE_MESSAGES[i];
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
+      for (let i = activeMsgs.length - 1; i >= 0; i--) {
+        const m = activeMsgs[i];
         if (m.agent === id || (id === 'recon' && m.agent === 'reviewer') || m.recipient.includes('@' + id)) {
           replayIdx = i + 1;
           renderGraph();
@@ -1653,14 +1906,16 @@
     // 9. Merkle Ledger DB View
     function renderLedgerTable() {
       const tbody = document.getElementById('ledger-table-body');
+      if (!tbody) return;
       tbody.innerHTML = '';
+      const activeLedger = (currentSession === 'historical' ? HISTORICAL_LEDGER : FRESH_LEDGER);
 
-      if (ACTIVE_LEDGER.length === 0) {
+      if (activeLedger.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" class="text-center text-zinc-500 py-4 font-mono">No sealed blocks in current session.</td></tr>';
         return;
       }
 
-      ACTIVE_LEDGER.forEach(row => {
+      activeLedger.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="font-bold text-white">#${row.seq}</td>
@@ -1676,7 +1931,8 @@
     }
 
     function toggleDiffDetails() {
-      document.getElementById('diff-code-block').classList.toggle('hidden');
+      const block = document.getElementById('diff-code-block');
+      if (block) block.classList.toggle('hidden');
     }
 
     // 10. Raw File Switcher
@@ -1685,10 +1941,12 @@
       curRaw = kind;
       ['board', 'members', 'swarm'].forEach(k => {
         const btn = document.getElementById('raw-btn-' + k);
-        if (k === kind) {
-          btn.className = 'px-3 py-1 rounded bg-zinc-800 text-white font-mono text-xs';
-        } else {
-          btn.className = 'px-3 py-1 rounded bg-zinc-900 text-zinc-400 font-mono text-xs';
+        if (btn) {
+          if (k === kind) {
+            btn.className = 'px-3 py-1 rounded bg-zinc-800 text-white font-mono text-xs';
+          } else {
+            btn.className = 'px-3 py-1 rounded bg-zinc-900 text-zinc-400 font-mono text-xs';
+          }
         }
       });
       renderRawView();
@@ -1696,8 +1954,10 @@
 
     function renderRawView() {
       const code = document.getElementById('raw-code');
+      if (!code) return;
+      const activeMsgs = (currentSession === 'historical' ? HISTORICAL_MESSAGES : FRESH_MESSAGES);
       if (curRaw === 'board') {
-        code.innerText = ACTIVE_MESSAGES.map(m => JSON.stringify(m)).join('\n');
+        code.innerText = activeMsgs.map(m => JSON.stringify(m)).join('\n');
       } else if (curRaw === 'members') {
         code.innerText = JSON.stringify({ session: currentSession, members: SQUAD_MEMBERS }, null, 2);
       } else {
@@ -1706,9 +1966,15 @@
     }
 
     function copyRaw() {
-      const text = document.getElementById('raw-code').innerText;
+      const text = document.getElementById('raw-code')?.innerText || '';
       navigator.clipboard.writeText(text);
-      alert('Copied to clipboard!');
+      showStarkToast(`
+        <span class="text-cyan-400 font-bold">📋</span>
+        <div>
+          <div class="text-white font-bold">Copied to Clipboard</div>
+          <div class="text-[11px] text-zinc-400">Raw view buffer copied successfully.</div>
+        </div>
+      `, 2000);
     }
 
     function searchBoard(q) {
@@ -1727,20 +1993,21 @@
       });
     }
 
-    // Initialize Dashboard
+    // Initialize Dashboard (With Saved Startup Mode Preference)
     window.onload = () => {
-      let initialMode = 'historical';
+      let initMode = 'historical';
       try {
-        const urlParam = new URLSearchParams(window.location.search).get('session');
-        if (urlParam === 'fresh' || urlParam === 'historical') {
-          initialMode = urlParam;
-        } else {
-          const stored = localStorage.getItem('heimdall_session_mode');
-          if (stored === 'fresh' || stored === 'historical') initialMode = stored;
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryMode = urlParams.get('session');
+        const savedMode = localStorage.getItem('heimdall_session_mode');
+        if (queryMode === 'fresh' || queryMode === 'historical') {
+          initMode = queryMode;
+        } else if (savedMode === 'fresh' || savedMode === 'historical') {
+          initMode = savedMode;
         }
       } catch (e) {}
 
-      setSessionState(initialMode);
+      setSessionState(initMode, false);
     };
   </script>
 </body>

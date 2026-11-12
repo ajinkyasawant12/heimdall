@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Port 4040 Live Verification Theater & Hackathon Control Room
  * Real-time SSE streaming for:
@@ -8,8 +8,14 @@
  */
 
 import { createServer } from "node:http";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { FindingsStore, LearningStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const findingsStore = new FindingsStore();
 const learningStore = new LearningStore();
@@ -19,7 +25,7 @@ const merkleLedger = new MerkleLedgerStore();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4040;
 const sseClients = [];
 
-function broadcastSSE(eventType: string, data: unknown) {
+function broadcastSSE(eventType, data) {
   const payload = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
   for (const client of sseClients) {
     try {
@@ -885,7 +891,34 @@ export function startServer() {
       return;
     }
 
-    if (url.pathname === "/" || url.pathname === "/index.html") {
+    if (url.pathname === "/" || url.pathname === "/index.html" || url.pathname === "/swarm") {
+      const swarmHtml = path.resolve(__dirname, "../heimdall_swarm_board.html");
+      if (fs.existsSync(swarmHtml)) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(fs.readFileSync(swarmHtml, "utf-8"));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(CONTROL_ROOM_HTML);
+      return;
+    }
+
+
+    if (url.pathname.startsWith("/assets/")) {
+      const rel = url.pathname.replace("/assets/", "");
+      const p1 = path.resolve(__dirname, "../../../assets", rel);
+      const p2 = path.resolve(__dirname, "../../assets", rel);
+      const target = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+      if (target) {
+        const ext = path.extname(target).toLowerCase();
+        const mime = ext === ".svg" ? "image/svg+xml" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : "application/octet-stream";
+        res.writeHead(200, { "Content-Type": mime });
+        res.end(fs.readFileSync(target));
+        return;
+      }
+    }
+
+    if (url.pathname === "/theater") {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(CONTROL_ROOM_HTML);
       return;
@@ -1062,4 +1095,3 @@ export function startServer() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   startServer();
 }
-
