@@ -401,8 +401,9 @@ export class HeimdallMcpServer {
 
     rl.on("line", async line => {
       if (!line.trim()) return;
+      let request: any = null;
       try {
-        const request = JSON.parse(line);
+        request = JSON.parse(line);
         if (request.method === "tools/list") {
           console.log(JSON.stringify({
             jsonrpc: "2.0",
@@ -425,6 +426,17 @@ export class HeimdallMcpServer {
         }
       } catch (err: any) {
         console.error("MCP Protocol Error:", err);
+        const reqId = request && typeof request === "object" && "id" in request ? request.id : null;
+        if (reqId !== null) {
+          console.log(JSON.stringify({
+            jsonrpc: "2.0",
+            id: reqId,
+            error: {
+              code: -32603,
+              message: err?.message || String(err)
+            }
+          }));
+        }
       }
     });
   }
