@@ -1,0 +1,14 @@
+﻿{
+  "system": "Heimdall CRS Autonomous Security Squad",
+  "mcp": {
+    "server": "heimdall-crs",
+    "configFile": ".vscode/mcp.json"
+  },
+  "agents": [
+    { "name": "recon", "description": "AST Slicing & Taint Extraction", "tool": "heimdall_audit_repo" },
+    { "name": "prover", "description": "Formal Z3 SMT Invariant Verification", "tool": "heimdall_prove_invariant" },
+    { "name": "tester", "description": "Meta JiT Catching Test Generation", "tool": "heimdall_run_catching_test" },
+    { "name": "patcher", "description": "Surgical Patch & Anti-Cheat Remediation", "tool": "heimdall_synthesize_patch" },
+    { "name": "auditor", "description": "Merkle Ledger & Ed25519 Notary", "tool": "heimdall_list_trajectories" }
+  ]
+}

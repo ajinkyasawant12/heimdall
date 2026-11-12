@@ -1,0 +1,16 @@
+﻿{
+  "name": "@heimdall/dashboard",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/server.js"
+  },
+  "dependencies": {
+    "@heimdall/shared": "workspace:*",
+    "@heimdall/db": "workspace:*",
+    "@heimdall/core": "workspace:*"
+  }
+}

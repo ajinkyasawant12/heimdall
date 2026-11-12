@@ -1,0 +1,15 @@
+﻿{
+  "github.copilot.chat.mcp.enabled": true,
+  "chat.experimental.mcp": true,
+  "cloudcode.enableMcp": true,
+  "mcp.servers": {
+    "heimdall-crs": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/packages/mcp/dist/index.js",
+        "--scope",
+        "${workspaceFolder}/heimdall.scope.json"
+      ]
+    }
+  }
+}

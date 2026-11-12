@@ -1,0 +1,15 @@
+﻿{
+  "mcpServers": {
+    "heimdall-crs": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/packages/mcp/dist/index.js",
+        "--scope",
+        "${workspaceFolder}/heimdall.scope.json"
+      ],
+      "env": {
+        "HEIMDALL_BROKER_SOCKET": "/tmp/aegis-broker.sock"
+      }
+    }
+  }
+}

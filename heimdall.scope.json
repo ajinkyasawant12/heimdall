@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "allowedRootPaths": ["./benchmarks/demo-targets", "./packages", "./tests"],
+  "maxSubprocessTimeoutMs": 5000,
+  "maxMemoryMb": 512,
+  "allowNetworkInSandbox": false,
+  "allowedBinaries": ["node", "npm", "npx", "git", "z3", "bwrap", "clang", "llvm-symbolizer", "python3", "python"]
+}

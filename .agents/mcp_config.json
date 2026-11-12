@@ -1,0 +1,16 @@
+﻿{
+  "mcpServers": {
+    "heimdall-crs-local": {
+      "command": "node",
+      "args": ["./packages/mcp/dist/index.js", "--scope", "./heimdall.scope.json"],
+      "env": {
+        "HEIMDALL_BROKER_SOCKET": "/tmp/aegis-broker.sock"
+      }
+    },
+    "colab-mcp": {
+      "command": "uvx",
+      "args": ["git+https://github.com/googlecolab/colab-mcp"],
+      "timeout": 60000
+    }
+  }
+}

@@ -1,0 +1,35 @@
+﻿{
+  "name": "heimdall-crs",
+  "version": "2.0.0",
+  "description": "Heimdall CRS - Autonomous AppSec, Formal Invariant & Self-Healing Patch Reasoning System",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf packages/*/dist",
+    "cli": "node packages/cli/dist/index.js",
+    "mcp": "node packages/mcp/dist/index.js",
+    "serve": "node packages/dashboard/dist/server.js",
+    "demo": "node packages/cli/dist/index.js auto ./benchmarks/demo-targets/order-api --demo-fast"
+  },
+  "keywords": [
+    "security-harness",
+    "cyber-reasoning-system",
+    "vulnerability-research",
+    "ai-agents",
+    "mcp",
+    "automated-patching",
+    "learning-harness",
+    "formal-verification",
+    "jit-testing"
+  ],
+  "author": "Heimdall Security Project",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "typescript": "^5.4.5"
+  }
+}

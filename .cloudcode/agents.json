@@ -1,0 +1,41 @@
+﻿{
+  "version": "1.0.0",
+  "project": "Heimdall CRS",
+  "agents": [
+    {
+      "id": "recon",
+      "name": "Recon Agent",
+      "role": "AST Syntax & Taint Slicer",
+      "entryTool": "heimdall_audit_repo",
+      "description": "Extracts byte-accurate AST slices enclosing critical security sinks (CWE-78, CWE-89, CWE-22)."
+    },
+    {
+      "id": "prover",
+      "name": "Prover Agent",
+      "role": "Formal Z3 Invariant Prover",
+      "entryTool": "heimdall_prove_invariant",
+      "description": "Evaluates SMT-LIB2 queries to mathematically prove vulnerability reachability (SAT) and post-patch soundness (UNSAT)."
+    },
+    {
+      "id": "tester",
+      "name": "Tester Agent",
+      "role": "Meta JiT Catching Tester",
+      "entryTool": "heimdall_run_catching_test",
+      "description": "Synthesizes transient unit tests that deterministically reproduce failure on unpatched targets."
+    },
+    {
+      "id": "patcher",
+      "name": "Patcher Agent",
+      "role": "Surgical Patch & Anti-Cheat Remediation",
+      "entryTool": "heimdall_synthesize_patch",
+      "description": "Synthesizes minimal surgical git diffs and passes through AST Anti-Cheat gate (0 empty catches, 100% exports intact)."
+    },
+    {
+      "id": "auditor",
+      "name": "Auditor Agent",
+      "role": "Cryptographic Merkle Auditor",
+      "entryTool": "heimdall_list_trajectories",
+      "description": "Verifies Ed25519 signatures and SHA-256 hash chaining in the node:sqlite WAL audit ledger."
+    }
+  ]
+}
