@@ -59,14 +59,28 @@ export class MerkleLedgerStore {
   }
 
   private loadFallbackDisk(): void {
-    const jsonPath = this.dbPath.replace(/\.db$/, '.json');
-    if (fs.existsSync(jsonPath)) {
-      try {
-        this.fallbackMemoryRows = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-      } catch {
-        this.fallbackMemoryRows = [];
+    const candidates = [
+      this.dbPath.replace(/\.db$/, '.json'),
+      process.env['HEIMDALL_DATA_DIR'] ? path.join(process.env['HEIMDALL_DATA_DIR'], 'merkle-ledger.json') : null,
+      'C:/Users/Ajinkya/Desktop/heimdall/.aegis/data/merkle-ledger.json',
+      path.resolve(process.cwd(), '.aegis/data/merkle-ledger.json'),
+      path.resolve(process.cwd(), '../../.aegis/data/merkle-ledger.json')
+    ].filter(Boolean) as string[];
+
+    for (const jsonPath of candidates) {
+      if (fs.existsSync(jsonPath)) {
+        try {
+          const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            this.fallbackMemoryRows = parsed;
+            return;
+          }
+        } catch {
+          // try next
+        }
       }
     }
+    this.fallbackMemoryRows = [];
   }
 
   private saveFallbackDisk(): void {
@@ -135,10 +149,12 @@ export class MerkleLedgerStore {
 
   public getRows(): AuditLedgerRow[] {
     if (this.db) {
-      return this.db
+      const rows = this.db
         .prepare('SELECT * FROM audit_ledger ORDER BY seq ASC')
         .all() as AuditLedgerRow[];
+      if (rows && rows.length > 0) return rows;
     }
+    this.loadFallbackDisk();
     return [...this.fallbackMemoryRows];
   }
 

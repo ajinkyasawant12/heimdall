@@ -17,10 +17,13 @@ import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const findingsStore = new FindingsStore();
-const learningStore = new LearningStore();
-const workflowStore = new WorkflowStore();
-const merkleLedger = new MerkleLedgerStore();
+const dataDir = process.env.HEIMDALL_DATA_DIR || 
+  (fs.existsSync(path.resolve(process.cwd(), ".aegis/data")) ? path.resolve(process.cwd(), ".aegis/data") :
+   path.resolve("C:/Users/Ajinkya/Desktop/heimdall/.aegis/data"));
+const findingsStore = new FindingsStore(dataDir);
+const learningStore = new LearningStore(dataDir);
+const workflowStore = new WorkflowStore(dataDir);
+const merkleLedger = new MerkleLedgerStore(path.join(dataDir, "merkle-ledger.db"));
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4040;
 const sseClients: ServerResponse[] = [];
@@ -937,7 +940,7 @@ export function startServer() {
 
     if (url.pathname === "/api/ledger") {
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(merkleLedger.getRows()));
+      res.end(JSON.stringify(merkleLedger.getRows(), null, 2));
       return;
     }
 
