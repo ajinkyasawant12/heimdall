@@ -6,6 +6,11 @@
 
 ## Key Highlights
 
+- **3-Layer Runtime Agent Governance (Catching Rogue Agents):**
+  - **Layer 1 (OpenShell Kernel & Network Fence):** Enforces Landlock LSM path containment (`/etc/shadow`, `~/.ssh`), blocks cloud metadata SSRF (`169.254.169.254`), and enforces zero-shell execution (`shell: false`).
+  - **Layer 2 (Z3 / Cedar Policy Prover):** Enforces mathematical role boundaries (preventing read-only SOC agents from escalating to code mutation) and blocks guardrail self-modification.
+  - **Layer 3 (AST Anti-Cheat & Backdoor Gate):** Scans agent-proposed code for trojans (`eval()`, `new Function()`, empty `catch {}` blocks), kills hijacked processes, rolls back state, and notarizes Ed25519 quarantine warrants into the Merkle Ledger.
+  - *Run live benchmark:* `aegis catch-rogue [target]`
 - **PoV-is-Truth Verification:** A vulnerability hypothesis is never accepted as a confirmed finding based on LLM output alone. Confirmation requires executing a standalone reproducer (PoV) against a deterministic sandbox oracle.
 - **Durable Learning & Memory Harness:**
   - Immutable, append-only security event ledger with cryptographic digests.

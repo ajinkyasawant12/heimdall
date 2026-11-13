@@ -6,7 +6,7 @@
 
 import { resolve } from "node:path";
 import { LearningStore, FindingsStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
-import { PatternScanner, ScopeGuard, PoVVerificationEngine, RemediationPatchEngine, WorkflowEngine, LearningService, Harness2RedTeamEngine, MicroAgentSwarmCoordinator, AutonomousCyberOrchestrator, DeterministicASTSlicer, verifySmtInvariant, SurgicalPatchEngine, RegressionGate } from "@heimdall/core";
+import { PatternScanner, ScopeGuard, PoVVerificationEngine, RemediationPatchEngine, WorkflowEngine, LearningService, Harness2RedTeamEngine, MicroAgentSwarmCoordinator, AutonomousCyberOrchestrator, DeterministicASTSlicer, verifySmtInvariant, SurgicalPatchEngine, RegressionGate, RogueAgentVerificationGate } from "@heimdall/core";
 import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
 import { HeimdallMcpServer } from "@heimdall/mcp";
 const args = process.argv.slice(2);
@@ -257,6 +257,45 @@ async function main() {
         console.log(`[*] Final Evolved Scaffolding Revision: ${report.finalHarnessRevision}\n`);
         break;
       }
+    case "catch-rogue":
+      {
+        const target = args[1] ? resolve(args[1]) : resolve("./benchmarks/demo-targets/order-api");
+        console.log(`\n=== Aegis / Heimdall NVIDIA OpenShell Rogue Agent Verification Gate & Policy Prover ===`);
+        console.log(`[*] Target Workspace: ${target}`);
+        console.log(`[*] Enforcing 3-Layer Containment: [1] OpenShell Kernel Fence | [2] Z3/Cedar Policy Prover | [3] AST Backdoor Gate\n`);
+        const manifest = {
+          version: "2.0.0",
+          allowedRootPaths: [target, process.cwd()],
+          allowedBinaries: ["node", "npm", "npx", "git", "z3"],
+          maxSubprocessTimeoutMs: 5000,
+          allowNetworkInSandbox: false
+        };
+        const gate = new RogueAgentVerificationGate(manifest, merkleLedger, learningStore);
+        const summary = gate.runRogueCatchingBenchmark(target);
+        for (const v of summary.verdicts) {
+          if (v.status === "APPROVED_SAFE") {
+            console.log(`[\x1b[32mAPPROVED_SAFE\x1b[0m] Agent: ${v.agentId} (${v.agentRole}) -> Action: ${v.actionId}`);
+            console.log(`    Formal Proof: ${v.smtStatus} | Predicate: ${v.formalProofPredicate}`);
+            console.log(`    Merkle Receipt: ${v.merkleEntryHash?.slice(0, 16)}...\n`);
+          } else {
+            console.log(`[\x1b[31mQUARANTINED_ROGUE\x1b[0m] Agent: ${v.agentId} (${v.agentRole}) -> Action: ${v.actionId}`);
+            console.log(`    Blocked By:   \x1b[33m${v.blockedByLayer}\x1b[0m`);
+            console.log(`    Violation:    \x1b[31m${v.violationType}\x1b[0m`);
+            console.log(`    SMT Witness:  ${v.witnessCounterexample}`);
+            console.log(`    Remediation:  ${v.quarantineAction}`);
+            console.log(`    Ed25519 Sig:  ${v.ed25519ReceiptSig.slice(0, 24)}... | Merkle: ${v.merkleEntryHash?.slice(0, 16)}...\n`);
+          }
+        }
+        console.log(`===================================================================`);
+        console.log(`[+] Rogue Agent Verification Summary:`);
+        console.log(`    Total Agent Actions Inspected:  ${summary.totalActionsEvaluated}`);
+        console.log(`    Benign Agent Actions Approved:  \x1b[32m${summary.benignActionsApproved}\x1b[0m`);
+        console.log(`    Rogue Agents Caught & Killed:   \x1b[31m${summary.rogueAgentsQuarantined}\x1b[0m`);
+        console.log(`    Host Kernel Compromises:        \x1b[32m${summary.hostCompromisesOccurred} (100% Contained)\x1b[0m`);
+        console.log(`    Merkle Audit Ledger Verified:   ${summary.merkleChainValid ? "\x1b[32mVALID\x1b[0m" : "\x1b[31mINVALID\x1b[0m"}`);
+        console.log(`===================================================================\n`);
+        break;
+      }
     case "memory":
       {
         console.log(`\n=== Heimdall Learning & Merkle Ledger Status ===`);
@@ -281,6 +320,7 @@ async function main() {
 ${HEIMDALL_BANNER} (v${HEIMDALL_VERSION})
 
 Commands:
+  aegis catch-rogue [target]         Run NVIDIA OpenShell Rogue Agent Verification Gate & Policy Prover
   aegis auto [target] [--demo-fast]  Run end-to-end CRS cycle (Scan -> PoV -> OpenShell -> Patch -> Ledger)
   aegis audit <file>                 Deterministic AST syntax slicing for security-critical sinks
   aegis prove <smt-query>            Z3 formal SMT invariant prover (SAT counterexample vs UNSAT proved)

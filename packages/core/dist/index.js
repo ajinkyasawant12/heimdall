@@ -27,3 +27,4 @@ export * from "./remediation/surgical-patch-engine.js";
 export * from "./remediation/regression-gate.js";
 export * from "./providers/gemini-adapter.js";
 export * from "./orchestrator.js";
+export * from "./verification/rogue-agent-gate.js";
