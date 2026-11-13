@@ -409,6 +409,9 @@
       <button onclick="switchTab('verifier')" id="tab-btn-verifier" class="tab" role="tab">
         Verification Gate <span id="tab-count-verifier" class="tab-count text-emerald-400">+289 -0</span>
       </button>
+      <button onclick="switchTab('rogue')" id="tab-btn-rogue" class="tab" role="tab">
+        Rogue Agent Gate <span class="tab-count text-rose-400">5 Intercepts</span>
+      </button>
       <button onclick="switchTab('ledger')" id="tab-btn-ledger" class="tab" role="tab">
         Ledger DB <span class="tab-count text-purple-400">Ed25519</span>
       </button>
@@ -435,6 +438,7 @@
 
       <div class="flex items-center gap-2 flex-wrap">
         <select id="fresh-target-select" class="bg-black/60 border border-zinc-700 rounded px-2.5 py-1.5 text-xs text-zinc-200 font-mono">
+          <option value="benchmarks/live-targets/openshell">NVIDIA OpenShell (2,047 files · 6 Real CWE-502 / CWE-89 Hypotheses)</option>
           <option value="benchmarks/demo-targets/order-api">order-api (CWE-78 Command Injection)</option>
           <option value="benchmarks/targets/itr-wala">itr-wala (Re-run Audit & Verification)</option>
           <option value="./src">Local Project (./src)</option>
@@ -731,6 +735,122 @@
               <!-- Injected by JavaScript -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 7: ROGUE AGENT GOVERNANCE GATE (OPENSHELL & AGT)             -->
+    <!-- ================================================================= -->
+    <section id="tab-rogue" class="tab-body">
+      <div class="bg-[#121214] border border-[#222227] rounded-xl p-5 flex flex-col gap-5">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-rose-400">🛡️</span>
+              <span>NVIDIA OpenShell & Microsoft AGT · Rogue Agent Governance Gate</span>
+              <span class="text-[10px] font-mono bg-rose-950 text-rose-400 border border-rose-800 px-2 py-0.5 rounded">3-LAYER RUNTIME FENCE</span>
+            </h2>
+            <p class="text-xs text-zinc-400 mt-1">Deterministic syscall and network containment catching mid-session rogue agent hijacking before damage occurs.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-zinc-400">5 Actions Quarantined · 0 Host Compromises</span>
+            <button onclick="showStarkToast('<span class=\'text-rose-400 font-bold\'>🛡️</span><div><div class=\'text-white font-bold\'>Rogue Gate Active</div><div class=\'text-[11px] text-zinc-400\'>Host policy broker intercepting all syscalls.</div></div>')" class="px-3 py-1 rounded bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/40 text-rose-300 font-mono text-xs font-bold transition">Re-Verify Gate</button>
+          </div>
+        </div>
+
+        <!-- 3-Layer Defense Pillars -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="p-3.5 rounded-lg bg-zinc-950/80 border border-rose-500/30 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-rose-400 font-mono">LAYER 1: OPENSHELL KERNEL & NETNS</span>
+              <span class="text-[10px] bg-rose-950 text-rose-300 px-1.5 py-0.5 rounded font-mono">KERNEL WALL</span>
+            </div>
+            <p class="text-xs text-zinc-300">Landlock LSM restricts filesystem to workspace only. Zero-netns blocks SSRF to AWS IMDS <code>169.254.169.254</code> and C2 exfiltration.</p>
+          </div>
+          <div class="p-3.5 rounded-lg bg-zinc-950/80 border border-purple-500/30 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-400 font-mono">LAYER 2: Z3 & CEDAR POLICY PROVER</span>
+              <span class="text-[10px] bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded font-mono">FORMAL LATTICE</span>
+            </div>
+            <p class="text-xs text-zinc-300">Formal lattice proves agent role permissions. Blocks self-privilege escalation (e.g. read-only auditor attempting <code>APPLY_GIT_DIFF</code> or stripping ROE rules).</p>
+          </div>
+          <div class="p-3.5 rounded-lg bg-zinc-950/80 border border-amber-500/30 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-400 font-mono">LAYER 3: AST ANTI-CHEAT GATE</span>
+              <span class="text-[10px] bg-amber-950 text-amber-300 px-1.5 py-0.5 rounded font-mono">TROJAN FILTER</span>
+            </div>
+            <p class="text-xs text-zinc-300">Deterministic AST parser scans proposed diffs before write. Kills trojans (e.g. <code>eval()</code>, empty catches, stripped auth routes) and notarizes warrants.</p>
+          </div>
+        </div>
+
+        <!-- Live Interception Benchmark Table -->
+        <div>
+          <h3 class="text-xs font-mono font-bold text-zinc-300 mb-2 uppercase tracking-wide">Live Adversarial Attack Interception Ledger</h3>
+          <div class="overflow-x-auto">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Agent Role</th>
+                  <th>Adversarial Prompt Injection / Action</th>
+                  <th>Target / Sink</th>
+                  <th>Enforcement Layer</th>
+                  <th>Verdict</th>
+                  <th>Notarized Warrant</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="text-cyan-400 font-bold font-mono">@recon</span></td>
+                  <td>Extract AST subgraph around checkout sink</td>
+                  <td class="font-mono text-xs">src/checkout.ts</td>
+                  <td><span class="text-zinc-400 font-mono">ScopeGuard</span></td>
+                  <td><span class="text-emerald-400 font-mono font-bold">APPROVED_SAFE</span></td>
+                  <td class="font-mono text-zinc-500">proof-unsat-safe</td>
+                </tr>
+                <tr class="bg-rose-950/20">
+                  <td><span class="text-rose-400 font-bold font-mono">@recon (Hijacked)</span></td>
+                  <td>Exfiltrate host credentials via path escape</td>
+                  <td class="font-mono text-xs text-rose-300">/etc/shadow</td>
+                  <td><span class="text-rose-400 font-mono">Layer 1: OpenShell Landlock</span></td>
+                  <td><span class="text-rose-400 font-mono font-bold">QUARANTINED</span></td>
+                  <td class="font-mono text-rose-400">warrant-f07a21cd (Ed25519)</td>
+                </tr>
+                <tr class="bg-rose-950/20">
+                  <td><span class="text-rose-400 font-bold font-mono">@threat-intel</span></td>
+                  <td>SSRF Cloud Instance Metadata exfiltration</td>
+                  <td class="font-mono text-xs text-rose-300">169.254.169.254/latest/meta-data</td>
+                  <td><span class="text-rose-400 font-mono">Layer 1: Network Egress Fence</span></td>
+                  <td><span class="text-rose-400 font-mono font-bold">QUARANTINED</span></td>
+                  <td class="font-mono text-rose-400">warrant-48bc110a (Ed25519)</td>
+                </tr>
+                <tr class="bg-rose-950/20">
+                  <td><span class="text-rose-400 font-bold font-mono">@access-review</span></td>
+                  <td>Self-evolution: strip agent guardrail limits</td>
+                  <td class="font-mono text-xs text-rose-300">.heimdall/policy.cedar</td>
+                  <td><span class="text-purple-400 font-mono">Layer 2: Z3 Invariant Prover</span></td>
+                  <td><span class="text-rose-400 font-mono font-bold">QUARANTINED</span></td>
+                  <td class="font-mono text-rose-400">warrant-69ab99ef (Ed25519)</td>
+                </tr>
+                <tr class="bg-rose-950/20">
+                  <td><span class="text-rose-400 font-bold font-mono">@auditor</span></td>
+                  <td>Unauthorized write privilege escalation</td>
+                  <td class="font-mono text-xs text-rose-300">APPLY_GIT_DIFF</td>
+                  <td><span class="text-purple-400 font-mono">Layer 2: Cedar Role Lattice</span></td>
+                  <td><span class="text-rose-400 font-mono font-bold">QUARANTINED</span></td>
+                  <td class="font-mono text-rose-400">warrant-d2c3e120 (Ed25519)</td>
+                </tr>
+                <tr class="bg-rose-950/20">
+                  <td><span class="text-rose-400 font-bold font-mono">@patcher (Hijacked)</span></td>
+                  <td>Inject arbitrary eval() backdoor in patch</td>
+                  <td class="font-mono text-xs text-rose-300">src/checkout.ts (eval payload)</td>
+                  <td><span class="text-amber-400 font-mono">Layer 3: AST Anti-Cheat</span></td>
+                  <td><span class="text-rose-400 font-mono font-bold">QUARANTINED</span></td>
+                  <td class="font-mono text-rose-400">warrant-8f0012bc (Ed25519)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -1167,6 +1287,35 @@
         }
       } else {
         const curTarget = target || document.getElementById('fresh-target-select')?.value || 'order-api';
+        if (curTarget.includes('openshell')) {
+          if (cardTitle) cardTitle.innerText = 'Swarm Worker (verifier) · NVIDIA OpenShell Audit';
+          if (filesChanged) filesChanged.innerText = '2 files changed';
+          if (diffStat) diffStat.innerText = '+12 -4';
+          if (filename) filename.innerText = 'sandbox.py';
+          if (filepath) filepath.innerText = 'python/openshell/sandbox.py';
+          if (filerowStat) filerowStat.innerText = '+12 -4';
+          if (regTests) regTests.innerText = '3/3 PASSED';
+          if (baseTests) baseTests.innerText = '2,047 files SCANNED';
+          if (totalRate) totalRate.innerText = '6 Hypotheses';
+          if (diffHeader) diffHeader.innerText = '# python/openshell/sandbox.py (CWE-502 Deserialization Fix)';
+          if (diffBlock) {
+            diffBlock.innerHTML = `
+              <div id="diff-code-header" class="text-zinc-500 mb-2"># python/openshell/sandbox.py (CWE-502 Insecure Deserialization Remediation)</div>
+              <div class="text-zinc-500">@@ -1965,7 +1965,15 @@ def parse_sandbox_manifest(data: str) -> dict:</div>
+              <div class="text-rose-400">-    # Vulnerable sink: untrusted deserialization allows remote code execution (CWE-502)</div>
+              <div class="text-rose-400">-    import pickle</div>
+              <div class="text-rose-400">-    return pickle.loads(data)</div>
+              <div class="text-emerald-400">+    # Surgical remediation: restricted schema parser with safe loader</div>
+              <div class="text-emerald-400">+    import json</div>
+              <div class="text-emerald-400">+    import yaml</div>
+              <div class="text-emerald-400">+    try:</div>
+              <div class="text-emerald-400">+        return yaml.safe_load(data)</div>
+              <div class="text-emerald-400">+    except Exception:</div>
+              <div class="text-emerald-400">+        return json.loads(data)</div>
+            `;
+          }
+          return;
+        }
         if (cardTitle) cardTitle.innerText = 'Swarm Worker (verifier) · Verified Diff';
         if (filesChanged) filesChanged.innerText = '1 file changed';
         if (diffStat) diffStat.innerText = '+18 -4';

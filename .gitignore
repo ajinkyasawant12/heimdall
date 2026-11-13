@@ -14,3 +14,4 @@ Thumbs.db
 tests/**/actual_*
 .cache/
 .aegis/
+benchmarks/live-targets/

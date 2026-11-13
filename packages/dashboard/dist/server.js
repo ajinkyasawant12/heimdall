@@ -1087,11 +1087,30 @@ export function startServer() {
     res.end("Not Found");
   });
 
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      const fallbackPort = PORT === 4040 ? 4041 : PORT + 1;
+      console.log(`[!] Port ${PORT} in use, trying fallback port ${fallbackPort}...`);
+      server.listen(fallbackPort, "127.0.0.1", () => {
+        console.log(`[+] Heimdall CRS Control Room Live Theater listening on: http://127.0.0.1:${fallbackPort}`);
+      });
+    } else {
+      console.error("[!] Server error:", err);
+    }
+  });
+
   server.listen(PORT, "127.0.0.1", () => {
     console.log(`[+] Heimdall CRS Control Room Live Theater listening on: http://127.0.0.1:${PORT}`);
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isDirectRun = process.argv[1] && (
+  import.meta.url === `file://${process.argv[1]}` ||
+  import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}` ||
+  process.argv[1].endsWith("server.js") ||
+  process.argv[1].endsWith("server.ts")
+);
+
+if (isDirectRun) {
   startServer();
 }

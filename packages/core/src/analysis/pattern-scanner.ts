@@ -50,7 +50,7 @@ export class PatternScanner {
       id: "SQL-INJECTION-CONCAT",
       bugClass: "sql_injection",
       severity: "high",
-      pattern: /\b(?:SELECT|INSERT|UPDATE|DELETE)\b[\s\S]{0,100}(?:\+\s*[a-zA-Z0-9_]+|\$\{[a-zA-Z0-9_]+\})/i,
+      pattern: /\b(?:SELECT|INSERT|UPDATE|DELETE)\b[\s\S]{0,100}(?:\+\s*[a-zA-Z0-9_]+|\$\{[a-zA-Z0-9_]+\})/gi,
       title: "Raw SQL Query String Concatenation",
       description: "Constructing SQL queries via string concatenation allows SQL injection attacks.",
       applicableExtensions: [".js", ".ts", ".py", ".java", ".go"]
@@ -70,7 +70,7 @@ export class PatternScanner {
       id: "CRYPTO-WEAK-HASH",
       bugClass: "crypto_misuse",
       severity: "medium",
-      pattern: /createHash\s*\(\s*["'](?:md5|sha1)["']\s*\)/i,
+      pattern: /createHash\s*\(\s*["'](?:md5|sha1)["']\s*\)/gi,
       title: "Cryptographically Insecure Hash Function",
       description: "MD5 and SHA-1 are cryptographically broken and vulnerable to collision attacks.",
       applicableExtensions: [".js", ".ts", ".py"]
@@ -80,7 +80,7 @@ export class PatternScanner {
       id: "DESER-UNSAFE-LOAD",
       bugClass: "deserialization",
       severity: "critical",
-      pattern: /(?:pickle\.loads|yaml\.load\s*\([^,)]*\)|unserialize)\s*\(/g,
+      pattern: /(?:pickle\.loads|yaml\.load\s*\([^,)]*\)|unserialize)\s*\(/gi,
       title: "Insecure Object Deserialization",
       description: "Deserializing untrusted data with unsafe deserializers permits arbitrary code execution.",
       applicableExtensions: [".py", ".php", ".js"]
@@ -162,6 +162,13 @@ export class PatternScanner {
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString()
             });
+
+            if (!rule.pattern.global) {
+              break;
+            }
+            if (match[0].length === 0) {
+              rule.pattern.lastIndex++;
+            }
           }
         }
       } catch {
