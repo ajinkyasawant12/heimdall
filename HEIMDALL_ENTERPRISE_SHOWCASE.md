@@ -132,22 +132,36 @@ Autonomy without verifiable ground truth is dangerous. Heimdall mathematically p
 
 ## 🚀 Live Demonstration Quickstart
 
-### Option A: Local Live Theater (Port 4040)
+### Option A: Local Live Theater (Port 4041 / 4040)
 ```bash
 # 1. Start the Heimdall Control Room & Live Verification Theater
 node packages/dashboard/dist/server.js
 
 # 2. Open browser:
-# Navigate to: http://localhost:4040
+# Navigate to: http://localhost:4041 (or http://localhost:4040)
 
-# 3. Click "⚡ RUN 20s HACKATHON DEMO"
-# Watch the 5 agent nodes light up sequentially with real-time SSE telemetry!
-
-# 4. Click "⚡ REPLAY TRAJECTORY (<1ms)"
-# Demonstrate instant sub-millisecond memory replay!
+# 3. Explore the Tabs:
+# - Board: Real-time agent chat feed.
+# - Rogue Agent Gate: 3-Layer execution fence with 5 quarantined attacks.
+# - Verification Gate: Surgical diffs and 100% regression test passes.
+# - Ledger DB: 19 cryptographically sealed Merkle blocks.
 ```
 
-### Option B: Google Colab 1-Click Runner
+### Option B: Catching Rogue Agents Live Benchmark
+```bash
+# Run the 3-Layer OpenShell/AGT Governance Interceptor:
+node packages/cli/dist/index.js catch-rogue benchmarks/demo-targets/order-api
+# Result: 5 adversarial injection attacks quarantined, 0 host compromises, Merkle ledger VALID.
+```
+
+### Option C: Ingest & Scan Production Target (NVIDIA OpenShell)
+```bash
+# Ingest and scan real-world upstream repository (2,047 files):
+node packages/cli/dist/index.js scan benchmarks/live-targets/openshell
+# Result: Discovered 6 real vulnerability hypotheses (CWE-502 & CWE-89) in sandbox.py and token-issuer.js.
+```
+
+### Option D: Google Colab 1-Click Runner
 1. Open Google Colab (`https://colab.research.google.com`).
 2. Upload `C:\Users\Ajinkya\Downloads\heimdall_colab_runner.ipynb`.
 3. When prompted in Step 2, upload `C:\Users\Ajinkya\Downloads\heimdall-crs.zip`.

@@ -222,12 +222,18 @@ This harness synthesizes the cutting edge of industrial and academic cybersecuri
 
 When loading this architecture into another LLM or multi-agent orchestrator:
 1. **Pass Section 2 (System Blueprint)** as the high-level system prompt.
-2. **Mount the MCP Server:** Configure `packages/mcp/dist/index.js` over stdio so the second LLM gains immediate access to:
+2. **Mount the MCP Server:** Configure `packages/mcp/dist/index.js` over stdio so the second LLM gains immediate access to all 10 tools:
    - `heimdall_scan_repository`: Codebase AST taint and pattern scanning.
    - `heimdall_verify_pov`: Deterministic Proof-of-Vulnerability execution.
    - `heimdall_generate_patch`: Surgical remediation synthesis.
-   - `heimdall_harness2_redteam`: Autonomous recursive self-improving red team loops.
-3. **Connect to the Database:** All state resides in plain JSON tables in `.aegis/data/`—fully readable by any agent script.
+   - `heimdall_prove_smt_invariant`: Machine-checked Z3 mathematical invariant proofs.
+   - `heimdall_get_audit_ledger`: Cryptographic Merkle DAG audit and Ed25519 verification.
+   - `heimdall_evaluate_rogue_action`: 3-Layer OpenShell/AGT runtime governance check.
+   - `heimdall_list_trajectories`: Sub-millisecond (<1ms) memory replay.
+   - `heimdall_query_findings`: Lifecycle finding queries by status and severity.
+   - `heimdall_recall_knowledge`: SHA-256 source-grounded tradecraft recall.
+   - `heimdall_run_workflow`: Security DAG workflow execution.
+3. **Connect to the Database & Dashboard:** State resides in `.aegis/data/` (JSON + SQLite WAL Merkle Ledger). View live telemetry and 19 sealed blocks at `http://localhost:4041/`.
 4. **Google AI Pro / Gemini Subscription Integration:**
    - The engine includes a native, zero-dependency `GoogleGeminiProvider` in `packages/core/src/providers/model-adapter.ts`.
    - Simply set your API key from Google AI Studio:

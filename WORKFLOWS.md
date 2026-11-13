@@ -60,3 +60,19 @@ Integrates Cloudflare's 6-Phase Security Audit methodology with Google Research 
 - **Phase 4: Surgical Remediation (`@patcher`):** Synthesizes minimal AST transformations enforcing DARPA AIxCC anti-cheat rules (0 deleted symbols, no dummy bypasses).
 - **Phase 5: Post-Swarm OpenShell Sandbox Verification (`@verifier`):** Mandatory quality gate running inside an isolated sandbox. Executes transient catching tests and full baseline test suites (313/313 pass).
 - **Phase 6: Cryptographic Merkle Notarization (`@auditor`):** Issues Ed25519-signed verification tickets and commits state blocks to the SQLite WAL Merkle ledger.
+
+---
+
+## 5. `template-rogue-agent-containment` (NVIDIA OpenShell 3-Layer Runtime Governance)
+
+Interception pipeline for evaluating agent tool and execution proposals against deterministic boundaries:
+
+- **Layer 1: OpenShell Kernel & Network Fence:** Evaluates proposed filesystem operations against Landlock LSM rules (blocking `/etc/shadow`, `~/.ssh`) and network calls against egress namespace policies (blocking SSRF to `169.254.169.254`).
+- **Layer 2: Z3 SMT & Cedar Role Lattice Prover:** Formally verifies that the agent's proposed action matches its assigned role (e.g. read-only auditor cannot mutate code via `APPLY_GIT_DIFF`) and prevents self-stripping of ROE rules.
+- **Layer 3: AST Anti-Cheat & Backdoor Gate:** Scans proposed code modifications for malicious constructs (`eval()`, `new Function()`, empty `catch {}` blocks) before disk commit.
+- **Quarantine & Notarization:** Hijacked agent processes are immediately terminated, state is rolled back via git, and an Ed25519 quarantine warrant is sealed to the Merkle ledger.
+
+Execution:
+```bash
+aegis catch-rogue benchmarks/demo-targets/order-api
+```
