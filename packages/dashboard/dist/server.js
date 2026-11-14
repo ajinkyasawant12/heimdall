@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { FindingsStore, LearningStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
+import { generateGraphTopology } from "./graph-topology.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -920,21 +921,6 @@ export function startServer() {
       }
     }
 
-
-    if (url.pathname.startsWith("/assets/")) {
-      const rel = url.pathname.replace("/assets/", "");
-      const p1 = path.resolve(__dirname, "../../../assets", rel);
-      const p2 = path.resolve(__dirname, "../../assets", rel);
-      const target = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
-      if (target) {
-        const ext = path.extname(target).toLowerCase();
-        const mime = ext === ".svg" ? "image/svg+xml" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : "application/octet-stream";
-        res.writeHead(200, { "Content-Type": mime });
-        res.end(fs.readFileSync(target));
-        return;
-      }
-    }
-
     if (url.pathname === "/theater") {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(CONTROL_ROOM_HTML);
@@ -950,6 +936,12 @@ export function startServer() {
     if (url.pathname === "/api/events") {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(learningStore.listEvents({ limit: 50 })));
+      return;
+    }
+
+    if (url.pathname === "/api/graph") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(generateGraphTopology(merkleLedger, findingsStore, learningStore), null, 2));
       return;
     }
 

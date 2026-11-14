@@ -34,7 +34,19 @@ const assetHandler = `
     }
 `;
 
-code = code.replace('    if (url.pathname === "/theater") {', assetHandler + '\n    if (url.pathname === "/theater") {');
+if (!code.includes('url.pathname.startsWith("/assets/")')) {
+  code = code.replace('    if (url.pathname === "/theater") {', assetHandler + '\n    if (url.pathname === "/theater") {');
+}
 
 fs.writeFileSync(distPath, code, 'utf-8');
 console.log('[+] Built clean packages/dashboard/dist/server.js');
+
+// Also build graph-topology.js
+const graphSrc = 'C:/Users/Ajinkya/Desktop/heimdall/packages/dashboard/src/graph-topology.ts';
+const graphDist = 'C:/Users/Ajinkya/Desktop/heimdall/packages/dashboard/dist/graph-topology.js';
+let graphCode = fs.readFileSync(graphSrc, 'utf-8');
+if (graphCode.charCodeAt(0) === 0xFEFF) {
+  graphCode = graphCode.slice(1);
+}
+fs.writeFileSync(graphDist, graphCode, 'utf-8');
+console.log('[+] Built clean packages/dashboard/dist/graph-topology.js');

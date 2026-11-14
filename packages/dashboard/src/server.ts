@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { FindingsStore, LearningStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import { HEIMDALL_BANNER, HEIMDALL_VERSION } from "@heimdall/shared";
+import { generateGraphTopology } from "./graph-topology.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -935,6 +936,12 @@ export function startServer() {
     if (url.pathname === "/api/events") {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(learningStore.listEvents({ limit: 50 })));
+      return;
+    }
+
+    if (url.pathname === "/api/graph") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(generateGraphTopology(merkleLedger, findingsStore, learningStore), null, 2));
       return;
     }
 

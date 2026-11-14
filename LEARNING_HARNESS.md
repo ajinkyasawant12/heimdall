@@ -68,5 +68,33 @@ When security workflows are modified, experimental instruction changes can inadv
                         Generate Self-Healing Proposal
 ```
 
+---
+
+## 5. Dual-Plane GraphRAG Long-Term Memory for Harness² Evolution
+
+Heimdall's storage layer (`.aegis/data/merkle-ledger.db` + `LearningStore`) serves as the long-term GraphRAG knowledge graph powering Google Harness² 3-axis recursive evolution (Propose-Probe-Compose):
+
+1. **Topology Nodes:**
+   - **Merkle Blocks:** Sequenced, hash-chained blocks with Ed25519 signatures.
+   - **Security Findings (CWEs):** Hypotheses and verified vulnerabilities mapped to AST locations.
+   - **Proofs of Vulnerability (PoVs):** Deterministic exploit payloads proving reachability.
+   - **Surgical Patches:** AST-verified remediations preserving 100% symbol exports.
+   - **AlphaProof Theorems:** Formal Lean/SMT machine-code level specifications (e.g. Signal PQXDH and SPQR Post-Compromise Security).
+   - **Rogue Quarantines:** Intercepted adversarial actions quarantined across the 4 governance layers.
+   - **Agent Personas:** Active worker configurations evolving over time.
+
+2. **Graph Relationships:**
+   - `SEALED_INTO`: Lineage chaining artifacts into cryptographic Merkle blocks.
+   - `DISCOVERED_IN`: Mapping findings to target files and AST sinks.
+   - `CONFIRMED_BY`: Proving hypotheses via deterministic PoVs.
+   - `PATCHED_WITH`: Binding findings to AST surgical patches.
+   - `PROVED_BY`: Mathematical proofs (Z3 SAT / UNSAT / AlphaProof theorems).
+   - `QUARANTINED_BY`: Interception lineage at OpenShell / Z3 / AST / AlphaProof layers.
+   - `HEALED_WITH_SPQR`: Post-compromise security ratchet key rotation and session state healing.
+
+3. **Autonomous Safe Recursion:**
+   While Harness² autonomously discovers, probes, and composes new agent scaffoldings, the 4-Layer Rogue Interceptor guarantees that no self-mutation can strip safety boundaries, exfiltrate credentials, or execute uncontained host commands.
+
+
 - When a workflow step fails across 3 consecutive runs on the current revision, Heimdall queries the execution history for the last revision where that step succeeded.
 - Heimdall emits a `WorkflowSelfHealingProposal` detailing the failure count and offering a verified rollback to the stable revision instructions.

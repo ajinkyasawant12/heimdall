@@ -358,6 +358,249 @@
       padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: var(--sw-mono);
       background: rgba(255, 255, 255, 0.06); color: #d4d4d8; border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    /* GRAPHRAG KNOWLEDGE GRAPH (NEO4J BLOOM STYLE) */
+    .graphrag-wrapper {
+      display: flex;
+      flex-direction: column;
+      background: #14161d;
+      border: 1px solid #282c38;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .graphrag-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #181b24;
+      border-bottom: 1px solid #282c38;
+      flex-wrap: wrap;
+    }
+    .gr-search-input {
+      background: #0f1117;
+      border: 1px solid #2f3442;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-family: var(--sw-mono);
+      color: #e2e8f0;
+      width: 250px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .gr-search-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+    }
+    .gr-chip {
+      background: #12141c;
+      border: 1px solid #282c38;
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-family: var(--sw-mono);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .gr-chip:hover {
+      background: #1e222d;
+      color: #f1f5f9;
+      border-color: #3b4253;
+    }
+    .gr-chip.active {
+      background: rgba(2, 132, 199, 0.25);
+      border-color: #0284c7;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .gr-action-btn {
+      background: #1e222d;
+      border: 1px solid #2f3442;
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-family: var(--sw-mono);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .gr-action-btn:hover {
+      background: #282d3b;
+      color: #fff;
+    }
+    .graphrag-view-body {
+      display: flex;
+      position: relative;
+      width: 100%;
+      height: 640px;
+      background: #181b20;
+      overflow: hidden;
+    }
+    .graphrag-canvas-wrap {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    #graphrag-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .gr-zoom-dock {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(18, 20, 26, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid #2b2f3a;
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 20;
+    }
+    .gr-zoom-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--sw-mono);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .gr-zoom-btn:hover {
+      background: #222634;
+      border-color: #3b4255;
+      color: #fff;
+    }
+    .gr-legend-dock {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(18, 20, 26, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid #2b2f3a;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 10px;
+      font-family: var(--sw-mono);
+      color: #94a3b8;
+      max-width: 580px;
+      z-index: 20;
+    }
+    .gr-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .gr-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    /* DOCKED NODE PROPERTIES PANEL (Exact Match to User Screenshot) */
+    .gr-properties-dock {
+      width: 340px;
+      height: 100%;
+      background: #16181f;
+      border-left: 1px solid #282c37;
+      display: flex;
+      flex-direction: column;
+      z-index: 25;
+      transition: width 0.2s ease, opacity 0.2s ease;
+    }
+    .gr-properties-dock.collapsed {
+      width: 0;
+      opacity: 0;
+      overflow: hidden;
+      border-left: none;
+    }
+    .prop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #14161c;
+      border-bottom: 1px solid #282c37;
+    }
+    .prop-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.3px;
+    }
+    .prop-badges-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #181b24;
+      border-bottom: 1px solid #242731;
+    }
+    .prop-badge-entity {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--sw-mono);
+    }
+    .prop-badge-node {
+      background: #0d9488;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--sw-mono);
+    }
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--sw-mono);
+      font-size: 11px;
+    }
+    .prop-table tr:nth-child(even) { background: #181b23; }
+    .prop-table tr:nth-child(odd) { background: #14161d; }
+    .prop-table tr:hover { background: #1f232e; }
+    .prop-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #222632;
+    }
+    .prop-table td.key {
+      color: #f1f5f9;
+      font-weight: 600;
+      width: 40%;
+      vertical-align: top;
+    }
+    .prop-table td.val {
+      color: #94a3b8;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -697,40 +940,155 @@
     </section>
 
     <!-- ================================================================= -->
-    <!-- TAB 5: MERKLE LEDGER DATABASE VIEW                                -->
+    <!-- ================================================================= -->
+    <!-- TAB 5: MERKLE LEDGER DATABASE VIEW & GRAPHRAG TOPOLOGY            -->
     <!-- ================================================================= -->
     <section id="tab-ledger" class="tab-body">
-      <div class="bg-[#121214] border border-[#222227] rounded-xl p-4 flex flex-col gap-3">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+      <div class="graphrag-wrapper">
+        <!-- Section Header with View Mode Toggle -->
+        <div class="flex items-center justify-between border-b border-[#282c38] px-4 py-3 bg-[#13151b] flex-wrap gap-2">
           <div>
             <h2 class="text-sm font-bold text-white flex items-center gap-2">
-              <span>Merkle Audit Ledger</span>
-              <span class="text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded">CHAIN VALID (Ed25519)</span>
+              <span class="text-purple-400">⚡</span>
+              <span>Merkle Audit Ledger & GraphRAG Topology</span>
+              <span id="ledger-chain-badge" class="text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded">CHAIN VALID (Ed25519)</span>
             </h2>
-            <p class="text-xs text-zinc-400 mt-0.5">Append-only cryptographic record of all agent decisions and test verifications.</p>
+            <p class="text-xs text-zinc-400 mt-0.5">Dual-Plane CRS: SQLite WAL Merkle Ledger memory + 4-Layer Rogue Interceptor guarantees zero escapes.</p>
           </div>
-          <div class="text-xs font-mono text-zinc-500">
-            Storage: <code class="text-zinc-300">.aegis/data/merkle-ledger.db</code>
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-mono text-zinc-500 hidden sm:inline">
+              Storage: <code class="text-zinc-300">.aegis/data/merkle-ledger.db</code>
+            </span>
+            <!-- View Mode Switcher: Knowledge Graph (Default) vs Raw Table -->
+            <div class="inline-flex p-1 bg-zinc-900 border border-zinc-700/80 rounded-lg text-xs font-mono shadow-inner">
+              <button id="btn-view-graph" onclick="setLedgerView('graph')" class="px-3 py-1 rounded bg-cyan-600 text-white font-semibold flex items-center gap-1.5 transition shadow-sm">
+                <span>🕸️</span> <span>Knowledge Graph View</span>
+              </button>
+              <button id="btn-view-table" onclick="setLedgerView('table')" class="px-3 py-1 rounded text-zinc-400 hover:text-white flex items-center gap-1.5 transition">
+                <span>📋</span> <span>Raw Table View</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="ledger-table">
-            <thead>
-              <tr>
-                <th>Seq #</th>
-                <th>Event Type</th>
-                <th>Agent</th>
-                <th>Payload Target</th>
-                <th>Prev Hash</th>
-                <th>Entry SHA-256</th>
-                <th>Ed25519 Sig</th>
-              </tr>
-            </thead>
-            <tbody id="ledger-table-body">
-              <!-- Injected by JavaScript -->
-            </tbody>
-          </table>
+        <!-- VIEW 1: GRAPHRAG KNOWLEDGE GRAPH (ACTIVE BY DEFAULT) -->
+        <div id="ledger-view-graph" class="flex flex-col">
+          <!-- Filter & Search Toolbar -->
+          <div class="graphrag-toolbar">
+            <div class="flex items-center gap-2 flex-wrap flex-1">
+              <input id="gr-search" type="text" oninput="onGraphSearch(this.value)" placeholder="🔍 Search graph nodes, CWEs, agents, hashes..." class="gr-search-input">
+              <button onclick="filterGraph('all', this)" class="gr-chip active">All (<span id="chip-cnt-all">40</span>)</button>
+              <button onclick="filterGraph('AgentPersona', this)" class="gr-chip">Agents (7)</button>
+              <button onclick="filterGraph('MerkleBlock', this)" class="gr-chip">Blocks (13)</button>
+              <button onclick="filterGraph('SecurityFinding', this)" class="gr-chip">Findings (3)</button>
+              <button onclick="filterGraph('ProofOfVulnerability', this)" class="gr-chip">PoVs (2)</button>
+              <button onclick="filterGraph('SurgicalPatch', this)" class="gr-chip">Patches (2)</button>
+              <button onclick="filterGraph('AlphaProofTheorem', this)" class="gr-chip">Theorems (4)</button>
+              <button onclick="filterGraph('RogueQuarantine', this)" class="gr-chip">Quarantines (7)</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-physics-toggle" onclick="toggleGraphPhysics()" class="gr-action-btn">⏸️ Freeze</button>
+              <button onclick="resetGraphView()" class="gr-action-btn">↺ Reset View</button>
+              <button onclick="syncGraphData()" class="gr-action-btn text-cyan-400 hover:text-cyan-300">🔄 Sync Backend</button>
+            </div>
+          </div>
+
+          <!-- Main Visualizer Area -->
+          <div class="graphrag-view-body">
+            <!-- Left: Interactive Canvas -->
+            <div class="graphrag-canvas-wrap" id="graphrag-canvas-container">
+              <canvas id="graphrag-canvas"></canvas>
+
+              <!-- Bottom Right Floating Zoom Controls matching screenshot -->
+              <div class="gr-zoom-dock">
+                <button onclick="zoomGraph(1.2)" class="gr-zoom-btn" title="Zoom in">＋</button>
+                <button onclick="zoomGraph(0.8)" class="gr-zoom-btn" title="Zoom out">－</button>
+                <button onclick="fitGraphToScreen()" class="gr-zoom-btn" title="Fit to screen">⛶</button>
+              </div>
+
+              <!-- Bottom Left Interactive Legend -->
+              <div class="gr-legend-dock">
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#38bdf8;"></span> Agent Persona</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#a855f7;"></span> Merkle Block</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#f97316;"></span> Finding (CWE)</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#fb7185;"></span> PoV Oracle</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#10b981;"></span> Surgical Patch</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#f59e0b;"></span> AlphaProof Theorem</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#f43f5e;"></span> Rogue Quarantine</span>
+                <span class="gr-legend-item"><span class="gr-legend-dot" style="background:#d4a373;"></span> Harness² Memory</span>
+              </div>
+            </div>
+
+            <!-- Right: Docked "Node properties" side panel matching reference image -->
+            <aside id="gr-properties-dock" class="gr-properties-dock">
+              <div class="prop-header">
+                <div class="prop-title">
+                  <span>Node properties</span>
+                  <span class="text-zinc-500 font-mono text-[11px]" title="Neo4j Bloom Inspector">👁️</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="prop-topological-rank" class="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">Rank: 0</span>
+                  <button onclick="togglePropertiesPanel()" class="text-zinc-500 hover:text-white text-xs font-mono px-1">✕</button>
+                </div>
+              </div>
+
+              <div class="prop-badges-bar">
+                <span id="prop-badge-primary" class="prop-badge-entity">Entity</span>
+                <span id="prop-badge-secondary" class="prop-badge-node">_Node_</span>
+                <div class="flex-1"></div>
+                <span id="prop-status-label" class="text-[10px] font-mono text-emerald-400 font-semibold uppercase">ACTIVE</span>
+              </div>
+
+              <div class="flex-1 overflow-y-auto">
+                <table class="prop-table">
+                  <tbody id="prop-table-body">
+                    <!-- Populated dynamically when node clicked -->
+                  </tbody>
+                </table>
+
+                <!-- Connected Relationships -->
+                <div class="p-3 border-t border-[#282c37] bg-[#14161c]">
+                  <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span>Connected Relationships</span>
+                    <span id="prop-edges-count" class="text-cyan-400 font-mono">0</span>
+                  </div>
+                  <div id="prop-edges-list" class="flex flex-col gap-1.5">
+                    <!-- Dynamic Edge Links -->
+                  </div>
+                </div>
+
+                <!-- Raw JSON payload viewer -->
+                <div class="p-3 border-t border-[#282c37] bg-[#12141a]">
+                  <details class="text-[10px] text-zinc-400">
+                    <summary class="cursor-pointer font-bold uppercase tracking-wider text-zinc-300 hover:text-white select-none">Raw Node JSON</summary>
+                    <pre id="prop-json-viewer" class="mt-2 p-2 rounded bg-black/60 border border-zinc-800 text-[10px] text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap max-h-48"></pre>
+                  </details>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- VIEW 2: RAW TABLE VIEW (ACCESSIBLE VIA TOGGLE) -->
+        <div id="ledger-view-table" class="hidden p-4">
+          <div class="overflow-x-auto">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Seq #</th>
+                  <th>Event Type</th>
+                  <th>Agent</th>
+                  <th>Payload Target</th>
+                  <th>Prev Hash</th>
+                  <th>Entry SHA-256</th>
+                  <th>Ed25519 Sig</th>
+                </tr>
+              </thead>
+              <tbody id="ledger-table-body">
+                <!-- Injected by JavaScript -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -1628,7 +1986,7 @@
       if (activeBtn) activeBtn.classList.add('active');
       if (activeBody) activeBody.classList.add('active');
       if (tabId === 'graph') { renderGraph(); }
-      if (tabId === 'ledger') { renderLedgerTable(); }
+      if (tabId === 'ledger') { onLedgerTabOpened(); }
       if (tabId === 'raw') { renderRawView(); }
     }
 
@@ -2139,7 +2497,877 @@
     }
 
     // Initialize Dashboard (With Saved Startup Mode Preference)
-    window.onload = () => {
+
+    // =================================================================
+    // 11. GraphRAG Knowledge Graph Visualizer & Inspector (Neo4j Bloom)
+    // =================================================================
+    let currentLedgerView = 'graph';
+    let graphragData = null;
+    let graphragNodes = [];
+    let graphragEdges = [];
+    let selectedGraphNode = null;
+    let hoveredGraphNode = null;
+    let isPhysicsRunning = true;
+    let graphSearchQuery = '';
+    let graphActiveCategory = 'all';
+
+    let graphPanX = 0;
+    let graphPanY = 0;
+    let graphZoom = 1.0;
+
+    let isGraphDragging = false;
+    let draggedGraphNode = null;
+    let isGraphPanning = false;
+    let lastPointer = { x: 0, y: 0 };
+    let graphAnimId = null;
+    let isGraphInitialized = false;
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return String(str);
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function setLedgerView(mode) {
+      currentLedgerView = mode;
+      const btnGraph = document.getElementById('btn-view-graph');
+      const btnTable = document.getElementById('btn-view-table');
+      const viewGraph = document.getElementById('ledger-view-graph');
+      const viewTable = document.getElementById('ledger-view-table');
+
+      if (mode === 'graph') {
+        if (btnGraph) btnGraph.className = 'px-3 py-1 rounded bg-cyan-600 text-white font-semibold flex items-center gap-1.5 transition shadow-sm';
+        if (btnTable) btnTable.className = 'px-3 py-1 rounded text-zinc-400 hover:text-white flex items-center gap-1.5 transition';
+        if (viewGraph) viewGraph.classList.remove('hidden');
+        if (viewTable) viewTable.classList.add('hidden');
+        initOrRenderGraphRAG();
+      } else {
+        if (btnTable) btnTable.className = 'px-3 py-1 rounded bg-cyan-600 text-white font-semibold flex items-center gap-1.5 transition shadow-sm';
+        if (btnGraph) btnGraph.className = 'px-3 py-1 rounded text-zinc-400 hover:text-white flex items-center gap-1.5 transition';
+        if (viewGraph) viewGraph.classList.add('hidden');
+        if (viewTable) viewTable.classList.remove('hidden');
+        renderLedgerTable();
+      }
+    }
+
+    function onLedgerTabOpened() {
+      if (currentLedgerView === 'graph') {
+        initOrRenderGraphRAG();
+      } else {
+        renderLedgerTable();
+      }
+    }
+
+    async function syncGraphData() {
+      try {
+        const res = await fetch('/api/graph');
+        if (res.ok) {
+          const data = await res.json();
+          graphragData = data;
+          initGraphTopology(data.nodes, data.edges);
+          showStarkToast('<span class="text-cyan-400 font-bold">🕸️</span><div><div class="text-white font-bold">GraphRAG Synchronized</div><div class="text-[11px] text-zinc-400">Synced ' + data.nodes.length + ' nodes and ' + data.edges.length + ' relationship edges.</div></div>', 2500);
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend /api/graph unavailable, using fallback GraphRAG topology');
+      }
+
+      if (!graphragData) {
+        buildFallbackGraphData();
+      }
+    }
+
+    function buildFallbackGraphData() {
+      const fallbackNodes = [
+        { id: "agent-coordinator", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1001", name: "@coordinator", type: "AgentPersona", status: "ACTIVE", created_at: 1754927000000, updated_at: 1754927381130, description: "Mark III Autonomous Swarm Orchestrator & Task DAG Scheduler", color: "#38bdf8", badge: "Entity", subBadge: "SquadCoordinator", topological_rank: 0, version: 3, ontology_valid: true, metadata: '{"role":"ORCHESTRATOR","mark":"Mark III","concurrency":7}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1001", "<id>": 1001, "name": "@coordinator", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927000000, "updated_at": 1754927381130, "description": "Mark III Autonomous Swarm Orchestrator & Task DAG Scheduler", "ontology_valid": true, "topological_rank": 0, "version": 3 } },
+        { id: "agent-recon", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1002", name: "@recon", type: "AgentPersona", status: "ACTIVE", created_at: 1754927010000, updated_at: 1754927381130, description: "Tree-Sitter AST Subgraph Slicer & Attack Surface Explorer", color: "#38bdf8", badge: "Entity", subBadge: "ReconAgent", topological_rank: 1, version: 1, ontology_valid: true, metadata: '{"parser":"Tree-Sitter","slicesGenerated":14}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1002", "<id>": 1002, "name": "@recon", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927010000, "description": "Tree-Sitter AST Subgraph Slicer & Attack Surface Explorer", "ontology_valid": true, "topological_rank": 1, "version": 1 } },
+        { id: "agent-prover", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1003", name: "@prover", type: "AgentPersona", status: "ACTIVE", created_at: 1754927020000, updated_at: 1754927381130, description: "Z3 SMT-LIB2 Constraint Solver & AlphaProof Spec Vacuity Prover", color: "#38bdf8", badge: "Entity", subBadge: "FormalProver", topological_rank: 2, version: 2, ontology_valid: true, metadata: '{"solver":"Z3 SMT-LIB2","vacuityChecks":"Two-Phase Active"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1003", "<id>": 1003, "name": "@prover", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927020000, "description": "Z3 SMT-LIB2 Constraint Solver & AlphaProof Spec Vacuity Prover", "ontology_valid": true, "topological_rank": 2, "version": 2 } },
+        { id: "agent-tester", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1004", name: "@tester", type: "AgentPersona", status: "ACTIVE", created_at: 1754927030000, updated_at: 1754927381130, description: "Meta JiT Catching Test (Dodgy-Diff) Exploit Witness Oracle", color: "#38bdf8", badge: "Entity", subBadge: "JiTTester", topological_rank: 2, version: 1, ontology_valid: true, metadata: '{"framework":"Meta JiT Catching Test"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1004", "<id>": 1004, "name": "@tester", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927030000, "description": "Meta JiT Catching Test (Dodgy-Diff) Exploit Witness Oracle", "ontology_valid": true, "topological_rank": 2, "version": 1 } },
+        { id: "agent-patcher", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1005", name: "@patcher", type: "AgentPersona", status: "ACTIVE", created_at: 1754927040000, updated_at: 1754927381130, description: "Surgical AST Diff Synthesizer & Anti-Cheat Invariant Preserver", color: "#38bdf8", badge: "Entity", subBadge: "PatchSynthesizer", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"strategy":"AST Structural Diff"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1005", "<id>": 1005, "name": "@patcher", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927040000, "description": "Surgical AST Diff Synthesizer & Anti-Cheat Invariant Preserver", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "agent-auditor", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1006", name: "@auditor", type: "AgentPersona", status: "ACTIVE", created_at: 1754927050000, updated_at: 1754927381130, description: "Ed25519 Merkle Notary, 4-Layer Rogue Agent Interceptor & Signer", color: "#38bdf8", badge: "Entity", subBadge: "AuditorNotary", topological_rank: 4, version: 1, ontology_valid: true, metadata: '{"keyType":"Ed25519"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1006", "<id>": 1006, "name": "@auditor", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927050000, "description": "Ed25519 Merkle Notary, 4-Layer Rogue Agent Interceptor & Signer", "ontology_valid": true, "topological_rank": 4, "version": 1 } },
+        { id: "agent-harness2", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1007", name: "@harness2", type: "AgentPersona", status: "ACTIVE", created_at: 1754927060000, updated_at: 1754927381130, description: "Google Harness² Recursive Scaffolding Engine (Propose-Probe-Compose)", color: "#38bdf8", badge: "Entity", subBadge: "EvolutionController", topological_rank: 5, version: 2, ontology_valid: true, metadata: '{"revision":2}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:1007", "<id>": 1007, "name": "@harness2", "type": "AgentPersona", "status": "ACTIVE", "created_at": 1754927060000, "description": "Google Harness² Recursive Scaffolding Engine", "ontology_valid": true, "topological_rank": 5, "version": 2 } },
+        { id: "finding-cwe78", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2001", name: "CWE-78: Command Injection", type: "SecurityFinding", status: "PATCHED_VERIFIED", created_at: 1754927100000, updated_at: 1754927381130, description: "Direct execSync shell command execution in checkout.ts line 34", color: "#f97316", badge: "Finding", subBadge: "CWE-78", topological_rank: 2, version: 1, ontology_valid: true, metadata: '{"cwe":"CWE-78","severity":"CRITICAL"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2001", "<id>": 2001, "name": "CWE-78: Command Injection", "cwe": "CWE-78", "severity": "CRITICAL", "status": "PATCHED_VERIFIED", "targetPath": "benchmarks/demo-targets/order-api/src/checkout.ts", "created_at": 1754927100000, "description": "Direct execSync shell command execution in checkout.ts line 34", "ontology_valid": true, "topological_rank": 2, "version": 1 } },
+        { id: "finding-cwe89", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2002", name: "CWE-89: SQL Injection", type: "SecurityFinding", status: "HYPOTHESIS_CONFIRMED", created_at: 1754927110000, updated_at: 1754927381130, description: "Raw SQL query string concatenation without parameterization", color: "#f97316", badge: "Finding", subBadge: "CWE-89", topological_rank: 2, version: 1, ontology_valid: true, metadata: '{"cwe":"CWE-89","severity":"HIGH"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2002", "<id>": 2002, "name": "CWE-89: SQL Injection", "cwe": "CWE-89", "severity": "HIGH", "status": "HYPOTHESIS_CONFIRMED", "targetPath": "benchmarks/demo-targets/order-api/src/db.ts", "created_at": 1754927110000, "description": "Raw SQL query string concatenation", "ontology_valid": true, "topological_rank": 2, "version": 1 } },
+        { id: "finding-cwe502", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2003", name: "CWE-502: Insecure Deserialization", type: "SecurityFinding", status: "HYPOTHESIS", created_at: 1754927120000, updated_at: 1754927381130, description: "Untrusted object deserialization sink flagged by tree-sitter AST slicer", color: "#f97316", badge: "Finding", subBadge: "CWE-502", topological_rank: 2, version: 1, ontology_valid: true, metadata: '{"cwe":"CWE-502"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:2003", "<id>": 2003, "name": "CWE-502: Insecure Deserialization", "cwe": "CWE-502", "severity": "MEDIUM", "status": "HYPOTHESIS", "created_at": 1754927120000, "description": "Untrusted object deserialization sink", "ontology_valid": true, "topological_rank": 2, "version": 1 } },
+        { id: "pov-cwe78", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:3001", name: "PoV: Shell Escape Oracle", type: "ProofOfVulnerability", status: "WITNESS_REPRODUCED", created_at: 1754927130000, updated_at: 1754927381130, description: "Deterministic crash payload: couponCode = 'SAVE20; id' causing command execution with exit code 1", color: "#fb7185", badge: "PoV", subBadge: "CrashOracle", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"exitCode":1}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:3001", "<id>": 3001, "name": "PoV: Shell Escape Oracle", "type": "ProofOfVulnerability", "status": "WITNESS_REPRODUCED", "exitCode": 1, "created_at": 1754927130000, "description": "Deterministic crash payload: couponCode = 'SAVE20; id'", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "pov-cwe89", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:3002", name: "PoV: SQL Invariant Tautology", type: "ProofOfVulnerability", status: "SAT_SOLVED", created_at: 1754927140000, updated_at: 1754927381130, description: "Z3 SMT-LIB2 counterexample: username = 'admin\' OR \'1\'=\'1'", color: "#fb7185", badge: "PoV", subBadge: "SMT_Counterexample", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"solver":"Z3","result":"SAT"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:3002", "<id>": 3002, "name": "PoV: SQL Invariant Tautology", "type": "ProofOfVulnerability", "status": "SAT_SOLVED", "created_at": 1754927140000, "description": "Z3 SMT-LIB2 counterexample: username = 'admin\' OR \'1\'=\'1'", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "patch-cwe78-execfile", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:4001", name: "Patch: execFile + RegEx", type: "SurgicalPatch", status: "VERIFIED_ANTI_CHEAT_PASSED", created_at: 1754927150000, updated_at: 1754927381130, description: "Substituted execSync with execFile; added strict regex /^[A-Z0-9_-]+$/; 0 empty catches; 100% symbols preserved", color: "#10b981", badge: "Patch", subBadge: "AST_Verified", topological_rank: 4, version: 1, ontology_valid: true, metadata: '{"emptyCatches":0,"exportsPreserved":"100%"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:4001", "<id>": 4001, "name": "Patch: execFile + RegEx", "type": "SurgicalPatch", "status": "VERIFIED_ANTI_CHEAT_PASSED", "antiCheatValid": true, "deletedSymbols": 0, "emptyCatches": 0, "created_at": 1754927150000, "description": "Substituted execSync with execFile; 0 empty catches", "ontology_valid": true, "topological_rank": 4, "version": 1 } },
+        { id: "patch-cwe89-param", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:4002", name: "Patch: Parameterized Stmt", type: "SurgicalPatch", status: "PROPOSED", created_at: 1754927160000, updated_at: 1754927381130, description: "AST replacement of string template with parameterized query ($1, $2)", color: "#10b981", badge: "Patch", subBadge: "AST_Prepared", topological_rank: 4, version: 1, ontology_valid: true, metadata: '{"diffLines":8}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:4002", "<id>": 4002, "name": "Patch: Parameterized Stmt", "type": "SurgicalPatch", "status": "PROPOSED", "created_at": 1754927160000, "description": "AST replacement of string template with parameterized query", "ontology_valid": true, "topological_rank": 4, "version": 1 } },
+        { id: "thm-01-pqxdh", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5001", name: "THM-01: PQXDH Secrecy", type: "AlphaProofTheorem", status: "PROVED_VALID", created_at: 1754927170000, updated_at: 1754927381130, description: "Lean/SMT Machine-Code Invariant: Kyber1024 + X25519 Post-Quantum Key Encapsulation Confidentiality", color: "#f59e0b", badge: "Theorem", subBadge: "ML_KEM_Kyber1024", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"heldOutSpecValid":true}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5001", "<id>": 5001, "name": "THM-01: PQXDH Secrecy", "theoremId": "THM-01-PQXDH-HANDSHAKE-SECRECY", "type": "AlphaProofTheorem", "status": "PROVED_VALID", "created_at": 1754927170000, "description": "Lean/SMT Machine-Code Invariant: Kyber1024 + X25519", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "thm-02-triple-ratchet", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5002", name: "THM-02: SPQR Ratchet PCS", type: "AlphaProofTheorem", status: "PROVED_VALID", created_at: 1754927180000, updated_at: 1754927381130, description: "Signal SPQR v1.6.0 Post-Compromise Security (PCS): State compromise recovery in <= 1 ratchet step", color: "#f59e0b", badge: "Theorem", subBadge: "SPQR_PCS", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"ratchetEpoch":2}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5002", "<id>": 5002, "name": "THM-02: SPQR Ratchet PCS", "theoremId": "THM-02-TRIPLE-RATCHET-PCS", "type": "AlphaProofTheorem", "status": "PROVED_VALID", "created_at": 1754927180000, "description": "Signal SPQR v1.6.0 Post-Compromise Security", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "thm-03-archive-session", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5003", name: "THM-03: Session Atomicity", type: "AlphaProofTheorem", status: "PROVED_VALID", created_at: 1754927190000, updated_at: 1754927381130, description: "Transaction Store Rollback Invariant: Archiving session state releases 0 secret pre-keys", color: "#f59e0b", badge: "Theorem", subBadge: "StoreRollback", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"storeType":"libsignal-cli"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5003", "<id>": 5003, "name": "THM-03: Session Atomicity", "type": "AlphaProofTheorem", "status": "PROVED_VALID", "created_at": 1754927190000, "description": "Transaction Store Rollback Invariant", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "thm-04-order-api-execfile", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5004", name: "THM-04: execFile Containment", type: "AlphaProofTheorem", status: "PROVED_VALID", created_at: 1754927200000, updated_at: 1754927381130, description: "Formal Invariant: ∀ coupon ∈ Input: ValidCoupon(coupon) ∧ shell=false ⟹ Escapes=∅", color: "#f59e0b", badge: "Theorem", subBadge: "Z3_ShellContainment", topological_rank: 3, version: 1, ontology_valid: true, metadata: '{"smtStatus":"UNSAT_SAFE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:5004", "<id>": 5004, "name": "THM-04: execFile Containment", "type": "AlphaProofTheorem", "status": "PROVED_VALID", "created_at": 1754927200000, "description": "Formal Invariant: shell=false ⟹ Escapes=∅", "ontology_valid": true, "topological_rank": 3, "version": 1 } },
+        { id: "quarantine-fs-breakout", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6001", name: "Quarantine: Landlock LSM Breakout", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927210000, updated_at: 1754927381130, description: "Poisoned prompt injection attempted /etc/shadow read. Intercepted by Layer 1 OpenShell Kernel Fence.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer1_KernelWall", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_1_OPENSHELL_KERNEL_FENCE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6001", "<id>": 6001, "name": "Quarantine: Landlock LSM Breakout", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_1_OPENSHELL_KERNEL_FENCE", "violationType": "SANDBOX_PATH_BREAKOUT", "witness": "path='../../../../etc/shadow' violates Landlock LSM containment boundary.", "created_at": 1754927210000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-net-exfil", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6002", name: "Quarantine: AWS IMDS SSRF Exfil", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927220000, updated_at: 1754927381130, description: "SSRF exfiltration attempt to http://169.254.169.254/ intercepted by Layer 1 Zero-Netns network namespace fence.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer1_NetnsWall", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_1_OPENSHELL_KERNEL_FENCE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6002", "<id>": 6002, "name": "Quarantine: AWS IMDS SSRF Exfil", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_1_OPENSHELL_KERNEL_FENCE", "violationType": "UNAUTHORIZED_NETWORK_EGRESS", "witness": "destination='http://169.254.169.254/latest/meta-data/' blocked by network fence.", "created_at": 1754927220000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-guardrail-strip", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6003", name: "Quarantine: ROE Guardrail Stripping", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927230000, updated_at: 1754927381130, description: "Harness² autonomous mutation attempted stripping ROE guardrails. Caught by Layer 2 Z3/Cedar policy prover.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer2_Z3Policy", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_2_Z3_CEDAR_POLICY_PROVER"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6003", "<id>": 6003, "name": "Quarantine: ROE Guardrail Stripping", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_2_Z3_CEDAR_POLICY_PROVER", "violationType": "GUARDRAIL_SELF_MODIFICATION", "witness": "Agent attempted to mutate immutable Control Plane axis.", "created_at": 1754927230000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-role-escalation", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6004", name: "Quarantine: Role Escalation", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927240000, updated_at: 1754927381130, description: "Read-only AST_AUDITOR subagent attempted unauthorized source mutation (APPLY_GIT_DIFF). Caught by Layer 2 Role Lattice.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer2_CedarLattice", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_2_Z3_CEDAR_POLICY_PROVER"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6004", "<id>": 6004, "name": "Quarantine: Role Escalation", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_2_Z3_CEDAR_POLICY_PROVER", "violationType": "ROLE_PRIVILEGE_ESCALATION", "witness": "Agent role AST_AUDITOR attempted unauthorized source mutation (APPLY_GIT_DIFF).", "created_at": 1754927240000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-trojan-patch", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6005", name: "Quarantine: Trojan eval() Backdoor", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927250000, updated_at: 1754927381130, description: "Rogue patcher injected dynamic eval() backdoor and empty catch block. Intercepted by Layer 3 AST Anti-Cheat Gate.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer3_ASTGate", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_3_AST_BACKDOOR_GATE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6005", "<id>": 6005, "name": "Quarantine: Trojan eval() Backdoor", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_3_AST_BACKDOOR_GATE", "violationType": "TROJAN_PATCH_BACKDOOR", "witness": "AST Gate detected trojan construct: Dynamic eval() backdoor injection.", "created_at": 1754927250000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-alphaproof-vacuous", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6006", name: "Quarantine: AlphaProof Vacuous Spec", type: "RogueQuarantine", status: "QUARANTINED", created_at: 1754927260000, updated_at: 1754927381130, description: "Rogue prover weakened specification / redefined predicate as False (vacuous truth). Intercepted by Layer 4 AlphaProof Vacuity Prover.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer4_VacuityProver", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6006", "<id>": 6006, "name": "Quarantine: AlphaProof Vacuous Spec", "type": "RogueQuarantine", "status": "QUARANTINED_ROGUE", "blockedByLayer": "LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE", "violationType": "ALPHAPROOF_VACUOUS_SPEC_WEAKENING", "witness": "AlphaProof Gatekeeper caught rogue prover weakening specification.", "created_at": 1754927260000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "quarantine-signal-ratchet-replay", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6007", name: "Quarantine: Signal Ratchet Replay", type: "RogueQuarantine", status: "QUARANTINED_HEALED", created_at: 1754927270000, updated_at: 1754927381130, description: "POST_COMPROMISE_LOCKOUT: Agent attempted replaying pre-quarantine epoch key invalidated by SPQR Triple Ratchet heal.", color: "#f43f5e", badge: "Quarantine", subBadge: "Layer4_SPQRRatchet", topological_rank: 4, version: 1, ontology_valid: false, metadata: '{"layer":"LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:6007", "<id>": 6007, "name": "Quarantine: Signal Ratchet Replay", "type": "RogueQuarantine", "status": "QUARANTINED_HEALED", "blockedByLayer": "LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE", "violationType": "SIGNAL_RATCHET_REPLAY_OR_REVOKED_KEY", "witness": "POST_COMPROMISE_LOCKOUT: Pre-quarantine epoch key invalidated by SPQR Triple Ratchet heal.", "created_at": 1754927270000, "ontology_valid": false, "topological_rank": 4, "version": 1 } },
+        { id: "block-1", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7001", name: "Block #1", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927010000, updated_at: 1754927010000, description: "Ed25519 Genesis Merkle Block: AlphaProof held-out specification hash anchored.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 1, ontology_valid: true, metadata: '{"seq":1,"event":"ALPHAPROOF_SIGNAL_VERIFICATION"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7001", "<id>": 7001, "name": "Block #1", "seq": 1, "type": "MerkleBlock", "status": "SEALED_VALID", "entry_hash": "d8af6d532d135537992ae3129b239c7d62b244a4f9aff73321c49ccebeb8031f", "created_at": 1754927010000, "ontology_valid": true, "topological_rank": 1, "version": 1 } },
+        { id: "block-2", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7002", name: "Block #2", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927020000, updated_at: 1754927020000, description: "Ed25519 Merkle Block #2: AST Recon Approved Safe.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 2, ontology_valid: true, metadata: '{"seq":2}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7002", "<id>": 7002, "name": "Block #2", "seq": 2, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927020000, "ontology_valid": true, "topological_rank": 1, "version": 2 } },
+        { id: "block-3", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7003", name: "Block #3", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927030000, updated_at: 1754927030000, description: "Ed25519 Merkle Block #3: Quarantined Landlock Breakout Warrant.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 3, ontology_valid: true, metadata: '{"seq":3}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7003", "<id>": 7003, "name": "Block #3", "seq": 3, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927030000, "ontology_valid": true, "topological_rank": 1, "version": 3 } },
+        { id: "block-4", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7004", name: "Block #4", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927040000, updated_at: 1754927040000, description: "Ed25519 Merkle Block #4: Quarantined SSRF Netns Warrant.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 4, ontology_valid: true, metadata: '{"seq":4}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7004", "<id>": 7004, "name": "Block #4", "seq": 4, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927040000, "ontology_valid": true, "topological_rank": 1, "version": 4 } },
+        { id: "block-5", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7005", name: "Block #5", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927050000, updated_at: 1754927050000, description: "Ed25519 Merkle Block #5: Quarantined ROE Strip Warrant.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 5, ontology_valid: true, metadata: '{"seq":5}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7005", "<id>": 7005, "name": "Block #5", "seq": 5, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927050000, "ontology_valid": true, "topological_rank": 1, "version": 5 } },
+        { id: "block-6", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7006", name: "Block #6", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927060000, updated_at: 1754927060000, description: "Ed25519 Merkle Block #6: Quarantined Role Escalation Warrant.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 6, ontology_valid: true, metadata: '{"seq":6}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7006", "<id>": 7006, "name": "Block #6", "seq": 6, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927060000, "ontology_valid": true, "topological_rank": 1, "version": 6 } },
+        { id: "block-15", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7015", name: "Block #15", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927150000, updated_at: 1754927150000, description: "Ed25519 Merkle Block #15: Order-API Remediation & SMT SAT Sealed.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 15, ontology_valid: true, metadata: '{"seq":15,"event":"SURGICAL_PATCH_VERIFIED"}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7015", "<id>": 7015, "name": "Block #15", "seq": 15, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927150000, "ontology_valid": true, "topological_rank": 1, "version": 15 } },
+        { id: "block-33", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7033", name: "Block #33", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927330000, updated_at: 1754927330000, description: "Ed25519 Merkle Block #33: Quarantined Trojan eval() Patch.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 33, ontology_valid: true, metadata: '{"seq":33}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7033", "<id>": 7033, "name": "Block #33", "seq": 33, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927330000, "ontology_valid": true, "topological_rank": 1, "version": 33 } },
+        { id: "block-34", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7034", name: "Block #34", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927340000, updated_at: 1754927340000, description: "Ed25519 Merkle Block #34: Quarantined AlphaProof Vacuous Spec Cheat.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 34, ontology_valid: true, metadata: '{"seq":34}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7034", "<id>": 7034, "name": "Block #34", "seq": 34, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927340000, "ontology_valid": true, "topological_rank": 1, "version": 34 } },
+        { id: "block-35", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7035", name: "Block #35", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927350000, updated_at: 1754927350000, description: "Ed25519 Merkle Block #35: Quarantined Signal Ratchet Replay Key.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 35, ontology_valid: true, metadata: '{"seq":35}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7035", "<id>": 7035, "name": "Block #35", "seq": 35, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927350000, "ontology_valid": true, "topological_rank": 1, "version": 35 } },
+        { id: "block-36", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7036", name: "Block #36", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927360000, updated_at: 1754927360000, description: "Ed25519 Merkle Block #36: AlphaProof & SPQR Ratchet Verification.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 36, ontology_valid: true, metadata: '{"seq":36}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7036", "<id>": 7036, "name": "Block #36", "seq": 36, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927360000, "ontology_valid": true, "topological_rank": 1, "version": 36 } },
+        { id: "block-37", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7037", name: "Block #37", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927370000, updated_at: 1754927370000, description: "Ed25519 Merkle Block #37: Trajectory Notarization [traj-cwe78-execfile].", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 37, ontology_valid: true, metadata: '{"seq":37}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7037", "<id>": 7037, "name": "Block #37", "seq": 37, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927370000, "ontology_valid": true, "topological_rank": 1, "version": 37 } },
+        { id: "block-38", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7038", name: "Block #38", type: "MerkleBlock", status: "SEALED_VALID", created_at: 1754927380000, updated_at: 1754927380000, description: "Ed25519 Merkle Block #38: Self-Healing Epoch Ratchet Notarization.", color: "#a855f7", badge: "Block", subBadge: "Ed25519_Signed", topological_rank: 1, version: 38, ontology_valid: true, metadata: '{"seq":38}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:7038", "<id>": 7038, "name": "Block #38", "seq": 38, "type": "MerkleBlock", "status": "SEALED_VALID", "created_at": 1754927380000, "ontology_valid": true, "topological_rank": 1, "version": 38 } },
+        { id: "traj-cwe78-execfile", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:8001", name: "traj-cwe78 (<1ms)", type: "HarnessTrajectory", status: "NOTARIZED_CACHED", created_at: 1754927350000, updated_at: 1754927381130, description: "Cached remediation trajectory for CWE-78 command injection. Zero LLM latency fast-path replay (<1ms).", color: "#d4a373", badge: "Memory", subBadge: "FastpathTrajectory", topological_rank: 5, version: 1, ontology_valid: true, metadata: '{"durationMs":0.8}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:8001", "<id>": 8001, "name": "traj-cwe78 (<1ms)", "type": "HarnessTrajectory", "status": "NOTARIZED_CACHED", "created_at": 1754927350000, "ontology_valid": true, "topological_rank": 5, "version": 1 } },
+        { id: "harness2-scaffold-rev2", elementId: "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:8002", name: "Harness² Rev 2", type: "HarnessScaffolding", status: "ACTIVE_REVISION", created_at: 1754927360000, updated_at: 1754927381130, description: "Google Harness² recursive evolved scaffolding (Revision 2). Propose-Probe-Compose cycle completed.", color: "#d4a373", badge: "Scaffolding", subBadge: "Revision_2", topological_rank: 5, version: 2, ontology_valid: true, metadata: '{"contrastScore":0.94}', properties: { "<elementId>": "4:c759ced-ec31-44dd-b3cc-c30cd95cad27:8002", "<id>": 8002, "name": "Harness² Rev 2", "type": "HarnessScaffolding", "status": "ACTIVE_REVISION", "revision": 2, "created_at": 1754927360000, "ontology_valid": true, "topological_rank": 5, "version": 2 } }
+      ];
+
+      const fallbackEdges = [
+        { id: "e-disc-1", source: "agent-recon", target: "finding-cwe78", label: "DISCOVERED_IN" },
+        { id: "e-disc-2", source: "agent-recon", target: "finding-cwe89", label: "DISCOVERED_IN" },
+        { id: "e-disc-3", source: "agent-recon", target: "finding-cwe502", label: "DISCOVERED_IN" },
+        { id: "e-conf-1", source: "finding-cwe78", target: "pov-cwe78", label: "CONFIRMED_BY" },
+        { id: "e-conf-2", source: "finding-cwe89", target: "pov-cwe89", label: "CONFIRMED_BY" },
+        { id: "e-conf-3", source: "agent-tester", target: "pov-cwe78", label: "CONFIRMED_BY" },
+        { id: "e-pat-1", source: "finding-cwe78", target: "patch-cwe78-execfile", label: "PATCHED_WITH" },
+        { id: "e-pat-2", source: "finding-cwe89", target: "patch-cwe89-param", label: "PATCHED_WITH" },
+        { id: "e-pat-3", source: "agent-patcher", target: "patch-cwe78-execfile", label: "PATCHED_WITH" },
+        { id: "e-prv-1", source: "patch-cwe78-execfile", target: "thm-04-order-api-execfile", label: "PROVED_BY" },
+        { id: "e-prv-2", source: "agent-prover", target: "thm-01-pqxdh", label: "PROVED_BY" },
+        { id: "e-prv-3", source: "agent-prover", target: "thm-02-triple-ratchet", label: "PROVED_BY" },
+        { id: "e-prv-4", source: "agent-prover", target: "thm-04-order-api-execfile", label: "PROVED_BY" },
+        { id: "e-qr-1", source: "quarantine-fs-breakout", target: "agent-auditor", label: "QUARANTINED_BY" },
+        { id: "e-qr-2", source: "quarantine-net-exfil", target: "agent-auditor", label: "QUARANTINED_BY" },
+        { id: "e-qr-3", source: "quarantine-guardrail-strip", target: "agent-auditor", label: "QUARANTINED_BY" },
+        { id: "e-qr-4", source: "quarantine-role-escalation", target: "agent-auditor", label: "QUARANTINED_BY" },
+        { id: "e-qr-5", source: "quarantine-trojan-patch", target: "agent-auditor", label: "QUARANTINED_BY" },
+        { id: "e-qr-6", source: "quarantine-alphaproof-vacuous", target: "agent-prover", label: "QUARANTINED_BY" },
+        { id: "e-qr-7", source: "quarantine-signal-ratchet-replay", target: "agent-prover", label: "QUARANTINED_BY" },
+        { id: "e-seal-1", source: "thm-01-pqxdh", target: "block-1", label: "SEALED_INTO" },
+        { id: "e-seal-2", source: "agent-recon", target: "block-2", label: "SEALED_INTO" },
+        { id: "e-seal-3", source: "quarantine-fs-breakout", target: "block-3", label: "SEALED_INTO" },
+        { id: "e-seal-4", source: "quarantine-net-exfil", target: "block-4", label: "SEALED_INTO" },
+        { id: "e-seal-5", source: "quarantine-guardrail-strip", target: "block-5", label: "SEALED_INTO" },
+        { id: "e-seal-6", source: "quarantine-role-escalation", target: "block-6", label: "SEALED_INTO" },
+        { id: "e-seal-7", source: "patch-cwe78-execfile", target: "block-15", label: "SEALED_INTO" },
+        { id: "e-seal-8", source: "quarantine-trojan-patch", target: "block-33", label: "SEALED_INTO" },
+        { id: "e-seal-9", source: "quarantine-alphaproof-vacuous", target: "block-34", label: "SEALED_INTO" },
+        { id: "e-seal-10", source: "quarantine-signal-ratchet-replay", target: "block-35", label: "SEALED_INTO" },
+        { id: "e-seal-11", source: "thm-02-triple-ratchet", target: "block-36", label: "SEALED_INTO" },
+        { id: "e-seal-12", source: "traj-cwe78-execfile", target: "block-37", label: "SEALED_INTO" },
+        { id: "e-seal-13", source: "block-37", target: "block-38", label: "SEALED_INTO" },
+        { id: "e-blk-1", source: "block-1", target: "block-2", label: "SEALED_INTO" },
+        { id: "e-blk-2", source: "block-2", target: "block-3", label: "SEALED_INTO" },
+        { id: "e-blk-3", source: "block-3", target: "block-4", label: "SEALED_INTO" },
+        { id: "e-blk-4", source: "block-4", target: "block-5", label: "SEALED_INTO" },
+        { id: "e-blk-5", source: "block-5", target: "block-6", label: "SEALED_INTO" },
+        { id: "e-blk-6", source: "block-33", target: "block-34", label: "SEALED_INTO" },
+        { id: "e-blk-7", source: "block-34", target: "block-35", label: "SEALED_INTO" },
+        { id: "e-blk-8", source: "block-35", target: "block-36", label: "SEALED_INTO" },
+        { id: "e-blk-9", source: "block-36", target: "block-37", label: "SEALED_INTO" },
+        { id: "e-heal-1", source: "quarantine-signal-ratchet-replay", target: "thm-02-triple-ratchet", label: "HEALED_WITH_SPQR" },
+        { id: "e-heal-2", source: "quarantine-alphaproof-vacuous", target: "thm-01-pqxdh", label: "HEALED_WITH_SPQR" },
+        { id: "e-heal-3", source: "quarantine-guardrail-strip", target: "harness2-scaffold-rev2", label: "HEALED_WITH_SPQR" },
+        { id: "e-har-1", source: "patch-cwe78-execfile", target: "traj-cwe78-execfile", label: "SEALED_INTO" },
+        { id: "e-har-2", source: "traj-cwe78-execfile", target: "harness2-scaffold-rev2", label: "COMPOSED_BY_HARNESS" },
+        { id: "e-har-3", source: "harness2-scaffold-rev2", target: "agent-harness2", label: "EVOLVED_INTO" }
+      ];
+
+      initGraphTopology(fallbackNodes, fallbackEdges);
+    }
+
+    function initGraphTopology(nodes, edges) {
+      graphragNodes = nodes;
+      graphragEdges = edges;
+
+      const canvas = document.getElementById('graphrag-canvas');
+      const container = canvas ? canvas.parentElement : null;
+      const w = container ? (container.clientWidth || 800) : 800;
+      const h = container ? (container.clientHeight || 640) : 640;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      // Layout nodes radially / cluster-based
+      graphragNodes.forEach((node, i) => {
+        const angle = (i / graphragNodes.length) * Math.PI * 2;
+        const radiusDist = 120 + (node.topological_rank || 1) * 65 + (i % 3) * 30;
+        node.x = cx + Math.cos(angle) * radiusDist;
+        node.y = cy + Math.sin(angle) * radiusDist;
+        node.vx = (Math.random() - 0.5) * 2;
+        node.vy = (Math.random() - 0.5) * 2;
+        node.radius = node.type === 'AgentPersona' ? 32 : (node.type === 'SecurityFinding' ? 34 : (node.type === 'MerkleBlock' ? 28 : 30));
+        node.isPinned = false;
+      });
+
+      const allCountEl = document.getElementById('chip-cnt-all');
+      if (allCountEl) allCountEl.innerText = graphragNodes.length;
+
+      // Select default node (finding-cwe78 or agent-coordinator)
+      const defaultNode = graphragNodes.find(n => n.id === 'finding-cwe78') || graphragNodes[0];
+      if (defaultNode) {
+        selectGraphNode(defaultNode);
+      }
+
+      startGraphLoop();
+    }
+
+    function initOrRenderGraphRAG() {
+      if (!isGraphInitialized) {
+        isGraphInitialized = true;
+        setupGraphCanvasEvents();
+        syncGraphData();
+      } else {
+        resizeGraphCanvas();
+        renderGraphCanvas();
+      }
+    }
+
+    function resizeGraphCanvas() {
+      const canvas = document.getElementById('graphrag-canvas');
+      if (!canvas) return;
+      const container = canvas.parentElement;
+      if (!container) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = container.clientWidth || 800;
+      const h = container.clientHeight || 640;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+
+    function setupGraphCanvasEvents() {
+      const canvas = document.getElementById('graphrag-canvas');
+      if (!canvas) return;
+      window.addEventListener('resize', resizeGraphCanvas);
+
+      canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        const graphPos = screenToGraph(screenX, screenY);
+
+        const hit = findNodeAt(graphPos.x, graphPos.y);
+        if (hit) {
+          isGraphDragging = true;
+          draggedGraphNode = hit;
+          hit.isPinned = true;
+          selectGraphNode(hit);
+          canvas.style.cursor = 'grabbing';
+        } else {
+          isGraphPanning = true;
+          lastPointer = { x: e.clientX, y: e.clientY };
+          canvas.style.cursor = 'grabbing';
+        }
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+
+        if (isGraphDragging && draggedGraphNode) {
+          const graphPos = screenToGraph(screenX, screenY);
+          draggedGraphNode.x = graphPos.x;
+          draggedGraphNode.y = graphPos.y;
+          draggedGraphNode.vx = 0;
+          draggedGraphNode.vy = 0;
+        } else if (isGraphPanning) {
+          const dx = e.clientX - lastPointer.x;
+          const dy = e.clientY - lastPointer.y;
+          graphPanX += dx;
+          graphPanY += dy;
+          lastPointer = { x: e.clientX, y: e.clientY };
+        } else {
+          // Check hover
+          const graphPos = screenToGraph(screenX, screenY);
+          const hit = findNodeAt(graphPos.x, graphPos.y);
+          if (hit !== hoveredGraphNode) {
+            hoveredGraphNode = hit;
+            canvas.style.cursor = hit ? 'pointer' : 'default';
+          }
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (draggedGraphNode) {
+          draggedGraphNode.isPinned = false;
+        }
+        isGraphDragging = false;
+        draggedGraphNode = null;
+        isGraphPanning = false;
+        if (canvas) canvas.style.cursor = 'default';
+      });
+
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const screenX = e.clientX - rect.left;
+        const screenY = e.clientY - rect.top;
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        applyZoom(zoomFactor, screenX, screenY);
+      }, { passive: false });
+    }
+
+    function screenToGraph(sx, sy) {
+      return {
+        x: (sx - graphPanX) / graphZoom,
+        y: (sy - graphPanY) / graphZoom
+      };
+    }
+
+    function findNodeAt(gx, gy) {
+      const visible = getVisibleGraphNodes();
+      for (let i = visible.length - 1; i >= 0; i--) {
+        const n = visible[i];
+        const r = n.radius || 30;
+        const dx = gx - n.x;
+        const dy = gy - n.y;
+        if (dx * dx + dy * dy <= r * r) {
+          return n;
+        }
+      }
+      return null;
+    }
+
+    function applyZoom(factor, cx, cy) {
+      const canvas = document.getElementById('graphrag-canvas');
+      const w = canvas ? canvas.clientWidth : 800;
+      const h = canvas ? canvas.clientHeight : 640;
+      const centerScreenX = (cx !== undefined) ? cx : w / 2;
+      const centerScreenY = (cy !== undefined) ? cy : h / 2;
+
+      const newZoom = Math.min(Math.max(graphZoom * factor, 0.25), 3.5);
+      graphPanX = centerScreenX - (centerScreenX - graphPanX) * (newZoom / graphZoom);
+      graphPanY = centerScreenY - (centerScreenY - graphPanY) * (newZoom / graphZoom);
+      graphZoom = newZoom;
+    }
+
+    function zoomGraph(factor) {
+      applyZoom(factor);
+    }
+
+    function fitGraphToScreen() {
+      const canvas = document.getElementById('graphrag-canvas');
+      if (!canvas) return;
+      const w = canvas.clientWidth || 800;
+      const h = canvas.clientHeight || 640;
+
+      const visible = getVisibleGraphNodes();
+      if (visible.length === 0) return;
+
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      visible.forEach(n => {
+        minX = Math.min(minX, n.x - (n.radius || 30));
+        maxX = Math.max(maxX, n.x + (n.radius || 30));
+        minY = Math.min(minY, n.y - (n.radius || 30));
+        maxY = Math.max(maxY, n.y + (n.radius || 30));
+      });
+
+      const graphW = (maxX - minX) || 100;
+      const graphH = (maxY - minY) || 100;
+      const scaleX = (w - 120) / graphW;
+      const scaleY = (h - 120) / graphH;
+      graphZoom = Math.min(Math.max(Math.min(scaleX, scaleY), 0.35), 1.6);
+
+      const midX = (minX + maxX) / 2;
+      const midY = (minY + maxY) / 2;
+      graphPanX = w / 2 - midX * graphZoom;
+      graphPanY = h / 2 - midY * graphZoom;
+    }
+
+    function resetGraphView() {
+      const canvas = document.getElementById('graphrag-canvas');
+      const w = canvas ? canvas.clientWidth : 800;
+      const h = canvas ? canvas.clientHeight : 640;
+      graphZoom = 1.0;
+      graphPanX = 0;
+      graphPanY = 0;
+      fitGraphToScreen();
+    }
+
+    function toggleGraphPhysics() {
+      isPhysicsRunning = !isPhysicsRunning;
+      const btn = document.getElementById('btn-physics-toggle');
+      if (btn) {
+        btn.innerText = isPhysicsRunning ? '⏸️ Freeze' : '▶️ Run Physics';
+        btn.classList.toggle('text-amber-400', !isPhysicsRunning);
+      }
+    }
+
+    function togglePropertiesPanel() {
+      const panel = document.getElementById('gr-properties-dock');
+      if (panel) panel.classList.toggle('collapsed');
+    }
+
+    function onGraphSearch(val) {
+      graphSearchQuery = (val || '').toLowerCase().trim();
+      const match = graphragNodes.find(n => n.name.toLowerCase().includes(graphSearchQuery) || n.id.toLowerCase().includes(graphSearchQuery));
+      if (match && graphSearchQuery.length > 2) {
+        selectGraphNode(match);
+        centerOnNode(match);
+      }
+    }
+
+    function filterGraph(category, btnEl) {
+      graphActiveCategory = category;
+      document.querySelectorAll('.gr-chip').forEach(c => c.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+    }
+
+    function getVisibleGraphNodes() {
+      return graphragNodes.filter(n => {
+        if (graphActiveCategory !== 'all' && n.type !== graphActiveCategory) {
+          return false;
+        }
+        if (graphSearchQuery) {
+          const text = (n.name + ' ' + n.type + ' ' + (n.description || '')).toLowerCase();
+          if (!text.includes(graphSearchQuery)) return false;
+        }
+        return true;
+      });
+    }
+
+    function selectGraphNode(node) {
+      selectedGraphNode = node;
+      updateNodePropertiesPanel(node);
+    }
+
+    function centerOnNode(node) {
+      const canvas = document.getElementById('graphrag-canvas');
+      if (!canvas) return;
+      const w = canvas.clientWidth || 800;
+      const h = canvas.clientHeight || 640;
+      graphPanX = w / 2 - node.x * graphZoom;
+      graphPanY = h / 2 - node.y * graphZoom;
+    }
+
+    function updateNodePropertiesPanel(node) {
+      if (!node) return;
+      const panel = document.getElementById('gr-properties-dock');
+      if (panel) panel.classList.remove('collapsed');
+
+      const rankEl = document.getElementById('prop-topological-rank');
+      if (rankEl) rankEl.innerText = 'Rank: ' + (node.topological_rank !== undefined ? node.topological_rank : 0);
+
+      const bPri = document.getElementById('prop-badge-primary');
+      if (bPri) bPri.innerText = node.badge || 'Entity';
+
+      const bSec = document.getElementById('prop-badge-secondary');
+      if (bSec) bSec.innerText = node.subBadge || node.type || '_Node_';
+
+      const statEl = document.getElementById('prop-status-label');
+      if (statEl) {
+        statEl.innerText = node.status || 'ACTIVE';
+        if (String(node.status).includes('QUARANTINED')) {
+          statEl.className = 'text-[10px] font-mono text-rose-400 font-semibold uppercase';
+        } else if (String(node.status).includes('VERIFIED') || String(node.status).includes('VALID')) {
+          statEl.className = 'text-[10px] font-mono text-emerald-400 font-semibold uppercase';
+        } else {
+          statEl.className = 'text-[10px] font-mono text-cyan-400 font-semibold uppercase';
+        }
+      }
+
+      // Populate Table Body matching screenshot exactly
+      const tbody = document.getElementById('prop-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
+        const props = node.properties || {};
+
+        const keyOrder = [
+          "<elementId>",
+          "<id>",
+          "created_at",
+          "description",
+          "id",
+          "metadata",
+          "name",
+          "ontology_valid",
+          "topological_rank",
+          "type",
+          "updated_at",
+          "version",
+          "status",
+          "cwe",
+          "severity",
+          "targetPath",
+          "blockedByLayer",
+          "violationType",
+          "witness",
+          "entry_hash",
+          "prev_hash",
+          "ed25519_sig",
+          "theoremId"
+        ];
+
+        const allKeys = Array.from(new Set([...keyOrder, ...Object.keys(props)]));
+        for (const k of allKeys) {
+          let val = props[k];
+          if (val === undefined) {
+            if (k === 'id') val = node.id;
+            else if (k === '<elementId>') val = node.elementId;
+            else if (k === '<id>') val = node.id;
+            else if (k === 'name') val = node.name;
+            else if (k === 'type') val = node.type;
+            else if (k === 'created_at') val = node.created_at;
+            else if (k === 'updated_at') val = node.updated_at;
+            else if (k === 'description') val = node.description;
+            else if (k === 'ontology_valid') val = node.ontology_valid;
+            else if (k === 'topological_rank') val = node.topological_rank;
+            else if (k === 'version') val = node.version;
+            else if (k === 'metadata') val = node.metadata;
+          }
+          if (val === undefined) continue;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="key">${escapeHtml(k)}</td>
+            <td class="val">${escapeHtml(String(val))}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      // Connected relationships list
+      const edgeList = document.getElementById('prop-edges-list');
+      if (edgeList) {
+        edgeList.innerHTML = '';
+        const connected = graphragEdges.filter(e => e.source === node.id || e.target === node.id);
+        const countEl = document.getElementById('prop-edges-count');
+        if (countEl) countEl.innerText = connected.length;
+
+        if (connected.length === 0) {
+          edgeList.innerHTML = '<span class="text-zinc-600 text-[10.5px] font-mono">No connected relationships</span>';
+        } else {
+          connected.forEach(e => {
+            const isOut = (e.source === node.id);
+            const otherId = isOut ? e.target : e.source;
+            const otherNode = graphragNodes.find(n => n.id === otherId);
+            const otherName = otherNode ? otherNode.name : otherId;
+
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between p-1.5 rounded bg-zinc-900/90 border border-zinc-800 text-[10.5px] font-mono cursor-pointer hover:border-cyan-500 hover:bg-zinc-800/80 transition';
+            div.innerHTML = `
+              <span class="text-zinc-400">${isOut ? '➔' : '⬅'} <span class="text-cyan-300 font-bold">${escapeHtml(e.label)}</span></span>
+              <span class="text-white font-semibold truncate max-w-[130px]" title="${escapeHtml(otherName)}">${escapeHtml(otherName)}</span>
+            `;
+            div.onclick = () => {
+              if (otherNode) {
+                selectGraphNode(otherNode);
+                centerOnNode(otherNode);
+              }
+            };
+            edgeList.appendChild(div);
+          });
+        }
+      }
+
+      // Raw JSON viewer
+      const jsonViewer = document.getElementById('prop-json-viewer');
+      if (jsonViewer) {
+        jsonViewer.innerText = JSON.stringify(node, null, 2);
+      }
+    }
+
+    function wrapTextLines(text, maxChars) {
+      if (!text) return [''];
+      const words = text.split(/[\s_:]+/);
+      const lines = [];
+      let cur = '';
+
+      for (const w of words) {
+        if (!cur) {
+          cur = w;
+        } else if ((cur + ' ' + w).length <= maxChars) {
+          cur += ' ' + w;
+        } else {
+          lines.push(cur);
+          cur = w;
+        }
+      }
+      if (cur) lines.push(cur);
+      return lines.slice(0, 3);
+    }
+
+    function dimNodeColor(hex, alpha) {
+      if (!hex || !hex.startsWith('#')) return 'rgba(100,100,100,' + alpha + ')';
+      let r = 0, g = 0, b = 0;
+      if (hex.length === 7) {
+        r = parseInt(hex.slice(1, 3), 16);
+        g = parseInt(hex.slice(3, 5), 16);
+        b = parseInt(hex.slice(5, 7), 16);
+      }
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+
+    function startGraphLoop() {
+      if (graphAnimId) cancelAnimationFrame(graphAnimId);
+
+      function loop() {
+        if (currentLedgerView === 'graph') {
+          if (isPhysicsRunning) {
+            stepPhysicsSimulation();
+          }
+          renderGraphCanvas();
+        }
+        graphAnimId = requestAnimationFrame(loop);
+      }
+      graphAnimId = requestAnimationFrame(loop);
+    }
+
+    function stepPhysicsSimulation() {
+      const visible = getVisibleGraphNodes();
+      if (visible.length === 0) return;
+
+      const nodeMap = new Map();
+      visible.forEach(n => nodeMap.set(n.id, n));
+
+      const canvas = document.getElementById('graphrag-canvas');
+      const w = canvas ? (canvas.clientWidth || 800) : 800;
+      const h = canvas ? (canvas.clientHeight || 640) : 640;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      // 1. Repulsion
+      for (let i = 0; i < visible.length; i++) {
+        const n1 = visible[i];
+        for (let j = i + 1; j < visible.length; j++) {
+          const n2 = visible[j];
+          const dx = n2.x - n1.x;
+          const dy = n2.y - n1.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const force = 7500 / (dist * dist);
+          const fx = (dx / dist) * force;
+          const fy = (dy / dist) * force;
+
+          if (!n1.isPinned && n1 !== draggedGraphNode) {
+            n1.vx -= fx;
+            n1.vy -= fy;
+          }
+          if (!n2.isPinned && n2 !== draggedGraphNode) {
+            n2.vx += fx;
+            n2.vy += fy;
+          }
+        }
+      }
+
+      // 2. Spring attraction along visible edges
+      for (const edge of graphragEdges) {
+        const n1 = nodeMap.get(edge.source);
+        const n2 = nodeMap.get(edge.target);
+        if (!n1 || !n2) continue;
+
+        const dx = n2.x - n1.x;
+        const dy = n2.y - n1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const restLen = 135;
+        const force = (dist - restLen) * 0.038;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+
+        if (!n1.isPinned && n1 !== draggedGraphNode) {
+          n1.vx += fx;
+          n1.vy += fy;
+        }
+        if (!n2.isPinned && n2 !== draggedGraphNode) {
+          n2.vx -= fx;
+          n2.vy -= fy;
+        }
+      }
+
+      // 3. Center gravity and update position
+      for (const n of visible) {
+        if (n === draggedGraphNode || n.isPinned) continue;
+
+        n.vx += (cx - n.x) * 0.016;
+        n.vy += (cy - n.y) * 0.016;
+
+        n.vx *= 0.86;
+        n.vy *= 0.86;
+
+        const speed = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+        if (speed > 10) {
+          n.vx = (n.vx / speed) * 10;
+          n.vy = (n.vy / speed) * 10;
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+    }
+
+    function renderGraphCanvas() {
+      const canvas = document.getElementById('graphrag-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.clientWidth || 800;
+      const h = canvas.clientHeight || 640;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Deep dark slate background matching screenshot
+      ctx.fillStyle = '#181b20';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.translate(graphPanX, graphPanY);
+      ctx.scale(graphZoom, graphZoom);
+
+      // Subtle background grid points
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      const step = 45;
+      const startX = Math.floor((-graphPanX / graphZoom - 200) / step) * step;
+      const endX = Math.ceil(((w - graphPanX) / graphZoom + 200) / step) * step;
+      const startY = Math.floor((-graphPanY / graphZoom - 200) / step) * step;
+      const endY = Math.ceil(((h - graphPanY) / graphZoom + 200) / step) * step;
+
+      for (let x = startX; x <= endX; x += step) {
+        for (let y = startY; y <= endY; y += step) {
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+      }
+
+      const visible = getVisibleGraphNodes();
+      const nodeMap = new Map();
+      visible.forEach(n => nodeMap.set(n.id, n));
+
+      // Connected edges and nodes for selected state
+      const activeEdges = new Set();
+      const connectedNodes = new Set();
+      if (selectedGraphNode) {
+        connectedNodes.add(selectedGraphNode.id);
+        for (const e of graphragEdges) {
+          if (e.source === selectedGraphNode.id || e.target === selectedGraphNode.id) {
+            activeEdges.add(e.id);
+            connectedNodes.add(e.source);
+            connectedNodes.add(e.target);
+          }
+        }
+      }
+
+      // 1. Draw Edges
+      for (const e of graphragEdges) {
+        const s = nodeMap.get(e.source);
+        const t = nodeMap.get(e.target);
+        if (!s || !t) continue;
+
+        const dx = t.x - s.x;
+        const dy = t.y - s.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+        const r1 = s.radius || 30;
+        const r2 = t.radius || 30;
+
+        const x1 = s.x + (dx / dist) * r1;
+        const y1 = s.y + (dy / dist) * r1;
+        const x2 = t.x - (dx / dist) * (r2 + 4);
+        const y2 = t.y - (dy / dist) * (r2 + 4);
+
+        const isAct = selectedGraphNode ? activeEdges.has(e.id) : false;
+        const isDim = selectedGraphNode && !isAct;
+
+        // Line
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = isAct ? '#38bdf8' : (isDim ? 'rgba(75, 85, 99, 0.2)' : '#525a6b');
+        ctx.lineWidth = isAct ? 2.6 : 1.4;
+        ctx.stroke();
+
+        // Arrowhead
+        const arrowLen = 9;
+        const angle = Math.atan2(dy, dx);
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(
+          x2 - arrowLen * Math.cos(angle - Math.PI / 7),
+          y2 - arrowLen * Math.sin(angle - Math.PI / 7)
+        );
+        ctx.lineTo(
+          x2 - arrowLen * Math.cos(angle + Math.PI / 7),
+          y2 - arrowLen * Math.sin(angle + Math.PI / 7)
+        );
+        ctx.closePath();
+        ctx.fillStyle = isAct ? '#38bdf8' : (isDim ? 'rgba(75, 85, 99, 0.25)' : '#6b7280');
+        ctx.fill();
+
+        // Edge label pill
+        if (dist > 75) {
+          const mx = (x1 + x2) / 2;
+          const my = (y1 + y2) / 2;
+          const label = e.label;
+          ctx.font = 'bold 9px "JetBrains Mono", monospace';
+          const txtW = ctx.measureText(label).width;
+
+          ctx.fillStyle = isDim ? 'rgba(24, 27, 34, 0.5)' : '#1a1d26';
+          ctx.strokeStyle = isAct ? '#38bdf8' : (isDim ? 'rgba(45, 51, 65, 0.4)' : '#2d3342');
+          ctx.lineWidth = 1;
+
+          const px = 5, py = 2;
+          ctx.beginPath();
+          ctx.roundRect(mx - txtW / 2 - px, my - 6 - py, txtW + px * 2, 13 + py * 2, 4);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = isAct ? '#ffffff' : (isDim ? 'rgba(156, 163, 175, 0.3)' : '#cbd5e1');
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, mx, my);
+        }
+      }
+
+      // 2. Draw Nodes
+      for (const n of visible) {
+        const isSel = selectedGraphNode && selectedGraphNode.id === n.id;
+        const isConn = selectedGraphNode && connectedNodes.has(n.id);
+        const isHov = hoveredGraphNode && hoveredGraphNode.id === n.id;
+        const isDim = selectedGraphNode && !isConn;
+
+        const r = n.radius || 30;
+
+        // Halo / selection ring
+        if (isSel) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r + 6, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Circular Body
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = isDim ? dimNodeColor(n.color, 0.25) : n.color;
+        ctx.fill();
+
+        // Outline
+        ctx.lineWidth = isSel ? 3.5 : (isHov ? 2.5 : 1.5);
+        ctx.strokeStyle = isSel ? '#ffffff' : (isHov ? '#ffffff' : (isDim ? 'rgba(255,255,255,0.1)' : 'rgba(255, 255, 255, 0.35)'));
+        ctx.stroke();
+
+        // Label inside node
+        ctx.fillStyle = isDim ? 'rgba(255, 255, 255, 0.3)' : '#ffffff';
+        ctx.font = 'bold 10px Inter, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const lines = wrapTextLines(n.name, 11);
+        const lineH = 12;
+        const totalH = lines.length * lineH;
+        const startY = n.y - totalH / 2 + lineH / 2;
+
+        for (let l = 0; l < lines.length; l++) {
+          ctx.fillText(lines[l], n.x, startY + l * lineH);
+        }
+      }
+
+      ctx.restore();
+    }
+
+        window.onload = () => {
       let initMode = 'historical';
       try {
         const urlParams = new URLSearchParams(window.location.search);
