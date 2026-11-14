@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Hierarchical Trajectory Plan Controller
  * Orchestrates multi-stage vulnerability verification and remediation.
  * Evaluates Trajectory Cache fast-paths before falling back to full synthesis.

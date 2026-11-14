@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Out-of-Process Host Policy Broker Daemon
  * Enforces zero-trust kernel containment, symlink-safe realpath checks,
@@ -6,6 +6,8 @@
  */
 
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { HostScopeGuard } from './scope-guard.js';
 import { FormalPolicyProver, type ProposedAction } from './policy-prover.js';
 import { runSandboxedBinary } from './safe-exec.js';
@@ -108,7 +110,17 @@ export class BrokerDaemon {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isDirectRun = Boolean(
+  process.argv[1] && (
+    import.meta.url === `file://${process.argv[1]}` ||
+    import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}` ||
+    fileURLToPath(import.meta.url) === resolve(process.argv[1]) ||
+    process.argv[1].endsWith("broker/dist/server.js") ||
+    process.argv[1].endsWith("broker/src/server.ts")
+  )
+);
+
+if (isDirectRun) {
   const daemon = new BrokerDaemon();
   daemon.start().then((port) => {
     console.log(`[+] Heimdall Host Policy Broker Daemon listening on 127.0.0.1:${port}`);

@@ -1,20 +1,25 @@
 import { spawn, execSync } from "node:child_process";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import readline from "node:readline";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const repoRoot = resolve(__dirname, "..");
 
 async function runRealLifeSuite() {
   console.log("================================================================================");
   console.log("       HEIMDALL CRS - REAL-LIFE MCP, API & REPOSITORY AUDIT TEST SUITE          ");
   console.log("================================================================================");
 
-  const mcpServerPath = resolve("./packages/mcp/dist/index.js");
-  const scopePath = resolve("./heimdall.scope.json");
+  const mcpServerPath = resolve(repoRoot, "packages/mcp/dist/index.js");
+  const scopePath = resolve(repoRoot, "heimdall.scope.json");
 
   console.log(`[+] Target MCP Server Binary: ${mcpServerPath}`);
   console.log(`[+] Scope Security Manifest : ${scopePath}`);
 
   const proc = spawn(process.execPath, [mcpServerPath, "--scope", scopePath], {
-    cwd: resolve("."),
+    cwd: repoRoot,
     stdio: ["pipe", "pipe", "pipe"]
   });
 
@@ -231,7 +236,7 @@ async function runRealLifeSuite() {
   try {
     const cliOutput = execSync(
       `"${process.execPath}" packages/cli/dist/index.js auto ./benchmarks/demo-targets/order-api --demo-fast`,
-      { encoding: "utf8", cwd: resolve(".") }
+      { encoding: "utf8", cwd: repoRoot }
     );
     const dCli = (performance.now() - tCli0).toFixed(2);
     console.log(cliOutput.trim());

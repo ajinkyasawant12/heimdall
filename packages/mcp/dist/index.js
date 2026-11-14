@@ -1,6 +1,4 @@
-﻿#!/usr/bin/env node
-import { pathToFileURL } from "node:url";
-import { resolve as resolveEntryPath } from "node:path";
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Model Context Protocol (MCP) Server
  * Exposes Autonomous Security Harness capabilities to Antigravity IDE & external agents.
@@ -9,9 +7,10 @@ import { resolve as resolveEntryPath } from "node:path";
 
 import * as readline from "node:readline";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { LearningStore, FindingsStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
-import { PatternScanner, ScopeGuard, PoVVerificationEngine, RemediationPatchEngine, WorkflowEngine, LearningService, Harness2RedTeamEngine, DeterministicASTSlicer, verifySmtInvariant, JiTCatchingTester, SurgicalPatchEngine, RegressionGate } from "@heimdall/core";
+import { PatternScanner, ScopeGuard, PoVVerificationEngine, RemediationPatchEngine, WorkflowEngine, LearningService, Harness2RedTeamEngine, DeterministicASTSlicer, verifySmtInvariant, JiTCatchingTester, SurgicalPatchEngine, RegressionGate, TrajectoryPlanController, TrajectoryCache, RogueAgentVerificationGate, AlphaProofSignalVerifier } from "@heimdall/core";
 import { HostScopeGuard } from "@heimdall/broker";
 export class HeimdallMcpServer {
   learningStore = new LearningStore();
@@ -27,6 +26,7 @@ export class HeimdallMcpServer {
   astSlicer = new DeterministicASTSlicer();
   surgicalPatchEngine = new SurgicalPatchEngine();
   regressionGate = new RegressionGate();
+  trajectoryCache = new TrajectoryCache(this.merkleLedger);
   manifest = {
     allowedRootPaths: ["./benchmarks/demo-targets", "./packages"],
     allowedBinaries: ["node", "npm", "npx", "git", "z3"],
@@ -41,6 +41,45 @@ export class HeimdallMcpServer {
     }
   }
   tools = [{
+    name: "heimdall_intercept_rogue_agent",
+    description: "Evaluates subagent actions against the 4-Layer NVIDIA OpenShell + AlphaProof Code + Signal Ratchet Verification Gate.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        targetDir: {
+          type: "string",
+          description: "Target directory"
+        }
+      }
+    }
+  }, {
+    name: "heimdall_alphaproof_signal_verify",
+    description: "Runs Google DeepMind AlphaProof Code Held-Out Spec Comparator, Vacuity Prover, and Signal PQXDH/SPQR Triple Ratchet session verification.",
+    inputSchema: {
+      type: "object",
+      properties: {}
+    }
+  }, {
+    name: "heimdall_list_trajectories",
+    description: "Lists all cached and notarized remediation trajectories, including steps, success rates, and ledger receipts.",
+    inputSchema: {
+      type: "object",
+      properties: {}
+    }
+  }, {
+    name: "heimdall_execute_trajectory_plan",
+    description: "Executes hierarchical plan controller on a target file: evaluates Trajectory Cache fast-path before falling back to full synthesis.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        filePath: {
+          type: "string",
+          description: "Path to source file to remediate"
+        }
+      },
+      required: ["filePath"]
+    }
+  }, {
     name: "heimdall_audit_repo",
     description: "Extracts byte-accurate AST slices enclosing critical security sinks (CWE-78, CWE-89, CWE-22) using deterministic tree-sitter AST slicing.",
     inputSchema: {
@@ -195,6 +234,55 @@ export class HeimdallMcpServer {
   }];
   async handleCallTool(name, args) {
     switch (name) {
+      case "heimdall_intercept_rogue_agent":
+        {
+          const gate = new RogueAgentVerificationGate(this.manifest, this.merkleLedger, this.learningStore);
+          const summary = gate.runRogueCatchingBenchmark(args.targetDir || "./benchmarks/demo-targets/order-api");
+          return {
+            content: [{
+              type: "text",
+              text: `Caught and quarantined ${summary.rogueAgentsQuarantined} rogue agent actions across 4 verification layers.`
+            }],
+            summary
+          };
+        }
+      case "heimdall_alphaproof_signal_verify":
+        {
+          const verifier = new AlphaProofSignalVerifier(this.merkleLedger);
+          const report = verifier.runVerificationSuite();
+          return {
+            content: [{
+              type: "text",
+              text: `Verified ${report.theoremsVerified.length} theorems, caught ${report.rogueSpecCheatsCaught} spec-gaming attempt(s), and rotated Signal Triple Ratchet keys.`
+            }],
+            report
+          };
+        }
+      case "heimdall_list_trajectories":
+        {
+          const trajectories = this.trajectoryCache.listTrajectories();
+          const stats = this.trajectoryCache.getStats();
+          return {
+            content: [{
+              type: "text",
+              text: `Retrieved ${trajectories.length} cached remediation trajectories.`
+            }],
+            stats,
+            trajectories
+          };
+        }
+      case "heimdall_execute_trajectory_plan":
+        {
+          const controller = new TrajectoryPlanController(this.manifest, this.merkleLedger);
+          const report = await controller.executePlan(args.filePath);
+          return {
+            content: [{
+              type: "text",
+              text: `Plan executed via ${report.strategyUsed} in ${report.executionTimeMs}ms.`
+            }],
+            report
+          };
+        }
       case "heimdall_audit_repo":
         {
           const slices = await this.astSlicer.sliceFile(args.filePath);
@@ -436,7 +524,17 @@ export class HeimdallMcpServer {
     });
   }
 }
-if (process.argv[1] && import.meta.url === pathToFileURL(resolveEntryPath(process.argv[1])).href) {
+const isDirectRun = Boolean(
+  process.argv[1] && (
+    import.meta.url === `file://${process.argv[1]}` ||
+    import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}` ||
+    fileURLToPath(import.meta.url) === resolve(process.argv[1]) ||
+    process.argv[1].endsWith("mcp/dist/index.js") ||
+    process.argv[1].endsWith("mcp/src/index.ts")
+  )
+);
+
+if (isDirectRun) {
   const scopeArgIdx = process.argv.indexOf("--scope");
   const scopePath = scopeArgIdx !== -1 ? process.argv[scopeArgIdx + 1] : "./heimdall.scope.json";
   const server = new HeimdallMcpServer(scopePath);

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Learning & Memory Ledger Contracts
  * Durable, source-grounded memory and evolutionary improvement contracts.
  */

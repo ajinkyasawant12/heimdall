@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Meta JiTTesting Catching Tester
  * Synthesizes transient "Catching Tests" via Dodgy-Diff and Intent-Aware workflows.
  * Verifies that the test deterministically fails on vulnerable code and passes on remediated code.

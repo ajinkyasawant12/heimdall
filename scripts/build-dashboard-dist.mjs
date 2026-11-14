@@ -15,6 +15,7 @@ code = code.replace('const sseClients: ServerResponse[] = [];', 'const sseClient
 code = code.replace('function broadcastSSE(eventType: string, data: unknown) {', 'function broadcastSSE(eventType, data) {');
 code = code.replace('function sleep(ms: number) {', 'function sleep(ms) {');
 code = code.replace('const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {', 'const server = createServer(async (req, res) => {');
+code = code.replace('server.on("error", (err: any) => {', 'server.on("error", (err) => {');
 
 // Add asset serving before 404
 const assetHandler = `

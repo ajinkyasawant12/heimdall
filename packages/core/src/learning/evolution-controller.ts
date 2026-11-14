@@ -1,4 +1,4 @@
-﻿import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { LearningStore } from "@heimdall/db";
 import type { ImprovementCandidate, EvaluationReceipt } from "@heimdall/shared";
 

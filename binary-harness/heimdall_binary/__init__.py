@@ -1,4 +1,4 @@
-﻿"""
+"""
 Heimdall Binary CRS Harness
 Evidence-first compiled binary vulnerability research and PoV verification.
 """

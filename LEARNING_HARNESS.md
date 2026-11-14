@@ -1,4 +1,4 @@
-﻿# Heimdall Learning & Memory Harness
+# Heimdall Learning & Memory Harness
 
 The **Heimdall Learning Harness** provides a durable, source-grounded memory and evolutionary improvement engine for security agents. Unlike volatile context windows or untrusted conversational notes, Heimdall grounds all learning in cryptographic file hashes and deterministic verification receipts.
 

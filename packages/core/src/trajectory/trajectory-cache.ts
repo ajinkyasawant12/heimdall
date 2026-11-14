@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Native Trajectory Cache
  * Records, hashes, and replays verified vulnerability remediation trajectories.
  * Eliminates redundant LLM queries and re-solves by reusing proven execution paths.

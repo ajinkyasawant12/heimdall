@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 /**
  * NVIDIA OpenShell Zero-Trust Agent Sandbox Adapter.
  * Provides micro-agents with a kernel-enforced execution laboratory (Landlock LSM,

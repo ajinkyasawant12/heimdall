@@ -1,4 +1,4 @@
-﻿import { writeFile, unlink } from 'node:fs/promises';
+import { writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { runSandboxedBinary } from '@heimdall/broker';

@@ -1,4 +1,4 @@
-﻿import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, extname } from "node:path";
 import { createHash } from "node:crypto";
 import { KNOWN_CWE_MAPPINGS } from "@heimdall/shared";

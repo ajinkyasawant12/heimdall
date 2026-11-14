@@ -1,4 +1,4 @@
-﻿# Heimdall Binary CRS Harness
+# Heimdall Binary CRS Harness
 
 Evidence-first binary analysis and autonomous Proof-of-Vulnerability (PoV) confirmation.
 

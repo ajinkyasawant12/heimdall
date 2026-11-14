@@ -1,4 +1,4 @@
-﻿import { execSync } from "node:child_process";
+import { execSync } from "node:child_process";
 import { writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -107,7 +107,7 @@ process.exit(0);
     let verified = false;
 
     try {
-      const runner = pov.executionEnvironment === "python" ? "python3" : "node";
+      const runner = pov.executionEnvironment === "python" ? "python3" : (process.execPath || "node");
       const command = `${runner} "${tempFile}"`;
       stdout = execSync(command, { timeout: 10_000, encoding: "utf-8" });
       exitCode = 0;

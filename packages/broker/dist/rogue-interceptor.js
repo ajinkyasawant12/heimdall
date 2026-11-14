@@ -6,7 +6,9 @@
 
 import { createHash, generateKeyPairSync, sign } from 'node:crypto';
 import path from 'node:path';
+import { SignalTripleRatchetSession } from './signal-ratchet.js';
 export class OpenShellRogueInterceptor {
+  signalRatchet = new SignalTripleRatchetSession();
   privateKey;
   publicKeyPem;
   deniedPathPatterns = ['/etc/shadow', '/etc/passwd', '.ssh', 'id_rsa', '.aws/credentials', '.env', 'aegis.scope.json', 'ed25519-keypair.json'];
@@ -149,7 +151,49 @@ export class OpenShellRogueInterceptor {
     }
 
     // =========================================================================
-    // ALL 3 VERIFICATION GATES PASSED -> APPROVED SAFE ACTION
+    // LAYER 4: DeepMind AlphaProof Code Spec Comparator & Signal Triple Ratchet Gate
+    // =========================================================================
+    // 4A. Catch AlphaProof Code Specification Gaming / Vacuous Proof Redefinition (e.g., redefining predicate as False)
+    const smtOrSpec = String(proposal.metadata?.smtQuery ?? proposal.proposedDiffOrCode ?? '');
+    const hasVacuousSpecCheat = /define-fun\s+\w+\s*\([^)]*\)\s*Bool\s+false/i.test(smtOrSpec) || Boolean(proposal.metadata?.weakenHeldOutSpec) || Boolean(proposal.metadata?.redefinePredicateFalse);
+    if (hasVacuousSpecCheat) {
+      this.signalRatchet.advanceRatchetAndVerifyTicket({
+        agentId: proposal.agentId,
+        actionId: proposal.id,
+        merklePrevHash: '0'.repeat(64),
+        quarantineTriggered: true
+      });
+      return this.buildVerdict(proposal, evaluatedAt, {
+        status: 'QUARANTINED_ROGUE',
+        blockedByLayer: 'LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE',
+        violationType: 'ALPHAPROOF_VACUOUS_SPEC_WEAKENING',
+        formalProofPredicate: `HeldOutSpecComparator(DraftSpec, BaselineSpec) == IDENTICAL && Satisfiable(Premises)`,
+        smtStatus: 'SAT_VIOLATION_WITNESS',
+        witnessCounterexample: `AlphaProof Gatekeeper caught rogue prover weakening specification / redefining security predicate as False (vacuous truth gaming).`
+      });
+    }
+
+    // 4B. Catch Signal Protocol Replay or Compromised Pre-Heal Session Key Usage
+    if (proposal.metadata?.replayTokenId || proposal.metadata?.useCompromisedEpochKey) {
+      const ratchetCheck = this.signalRatchet.advanceRatchetAndVerifyTicket({
+        agentId: proposal.agentId,
+        actionId: proposal.id,
+        merklePrevHash: '0'.repeat(64),
+        replayTokenId: proposal.metadata?.replayTokenId,
+        quarantineTriggered: true
+      });
+      return this.buildVerdict(proposal, evaluatedAt, {
+        status: 'QUARANTINED_ROGUE',
+        blockedByLayer: 'LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE',
+        violationType: 'SIGNAL_RATCHET_REPLAY_OR_REVOKED_KEY',
+        formalProofPredicate: `forall msg in Session: FreshMessageKey(msg.mk) && msg.epoch == ActiveRatchetEpoch`,
+        smtStatus: 'SAT_VIOLATION_WITNESS',
+        witnessCounterexample: `${ratchetCheck.reason} (libsignal-cli transactional store rollback enforced).`
+      });
+    }
+
+    // =========================================================================
+    // ALL 4 VERIFICATION GATES PASSED -> APPROVED SAFE ACTION
     // =========================================================================
     return this.buildVerdict(proposal, evaluatedAt, {
       status: 'APPROVED_SAFE',

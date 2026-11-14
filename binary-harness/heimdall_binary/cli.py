@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 import json
 import argparse
 from .triage import triage_binary

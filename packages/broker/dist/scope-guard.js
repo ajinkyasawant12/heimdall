@@ -1,4 +1,4 @@
-﻿import { readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { assertPathInScope } from './safe-exec.js';
 export class HostScopeGuard {

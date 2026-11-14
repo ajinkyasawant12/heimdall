@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import type { WorkflowStore } from "@heimdall/db";
 import type { LearningService } from "../learning/learning-service.js";
 import type {

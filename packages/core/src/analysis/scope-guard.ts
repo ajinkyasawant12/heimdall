@@ -1,4 +1,4 @@
-﻿import { resolve, relative, isAbsolute } from "node:path";
+import { resolve, relative, isAbsolute } from "node:path";
 import { realpathSync, statSync } from "node:fs";
 import type { TargetScope } from "@heimdall/shared";
 import { DEFAULT_MAX_REVIEW_FILES, DEFAULT_MAX_FILE_SIZE_BYTES } from "@heimdall/shared";

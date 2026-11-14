@@ -1,9 +1,11 @@
-﻿/**
+/**
  * Heimdall CRS - Global Constants & Configuration Defaults
  */
 
 export const HEIMDALL_VERSION = "2.0.0";
 export const HEIMDALL_BANNER = "Heimdall CRS - Autonomous AI Security Harness";
+
+// Compatibility aliases
 export const AEGIS_VERSION = HEIMDALL_VERSION;
 export const AEGIS_BANNER = HEIMDALL_BANNER;
 export const DEFAULT_MAX_REVIEW_FILES = 2000;

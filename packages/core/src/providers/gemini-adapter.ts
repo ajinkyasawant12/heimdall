@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Gemini 3.8 Flash & 4 Argon Structured Model Adapter
  * Routes high-speed parallel tasks to gemini-3.8-flash and formal SMT/patch synthesis to gemini-4-argon
  * with constrained JSON schema decoding and cost circuit breakers.

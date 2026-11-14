@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Model Context Protocol (MCP) Server
  * Exposes Autonomous Security Harness capabilities to Antigravity IDE & external agents.
@@ -7,6 +7,7 @@
 
 import * as readline from "node:readline";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { LearningStore, FindingsStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import {
@@ -23,7 +24,9 @@ import {
   SurgicalPatchEngine,
   RegressionGate,
   TrajectoryPlanController,
-  TrajectoryCache
+  TrajectoryCache,
+  RogueAgentVerificationGate,
+  AlphaProofSignalVerifier
 } from "@heimdall/core";
 import { HostScopeGuard } from "@heimdall/broker";
 import type { ScopeManifest } from "@heimdall/shared";
@@ -58,6 +61,24 @@ export class HeimdallMcpServer {
   }
 
   public readonly tools = [
+    {
+      name: "heimdall_intercept_rogue_agent",
+      description: "Evaluates subagent actions against the 4-Layer NVIDIA OpenShell + AlphaProof Code + Signal Ratchet Verification Gate.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          targetDir: { type: "string", description: "Target directory" }
+        }
+      }
+    },
+    {
+      name: "heimdall_alphaproof_signal_verify",
+      description: "Runs Google DeepMind AlphaProof Code Held-Out Spec Comparator, Vacuity Prover, and Signal PQXDH/SPQR Triple Ratchet session verification.",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
+    },
     {
       name: "heimdall_list_trajectories",
       description: "Lists all cached and notarized remediation trajectories, including steps, success rates, and ledger receipts.",
@@ -192,6 +213,22 @@ export class HeimdallMcpServer {
 
   async handleCallTool(name: string, args: Record<string, any>): Promise<any> {
     switch (name) {
+      case "heimdall_intercept_rogue_agent": {
+        const gate = new RogueAgentVerificationGate(this.manifest, this.merkleLedger, this.learningStore);
+        const summary = gate.runRogueCatchingBenchmark(args.targetDir || "./benchmarks/demo-targets/order-api");
+        return {
+          content: [{ type: "text", text: `Caught and quarantined ${summary.rogueAgentsQuarantined} rogue agent actions across 4 verification layers.` }],
+          summary
+        };
+      }
+      case "heimdall_alphaproof_signal_verify": {
+        const verifier = new AlphaProofSignalVerifier(this.merkleLedger);
+        const report = verifier.runVerificationSuite();
+        return {
+          content: [{ type: "text", text: `Verified ${report.theoremsVerified.length} theorems, caught ${report.rogueSpecCheatsCaught} spec-gaming attempt(s), and rotated Signal Triple Ratchet keys.` }],
+          report
+        };
+      }
       case "heimdall_list_trajectories": {
         const trajectories = this.trajectoryCache.listTrajectories();
         const stats = this.trajectoryCache.getStats();
@@ -442,7 +479,17 @@ export class HeimdallMcpServer {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isDirectRun = Boolean(
+  process.argv[1] && (
+    import.meta.url === `file://${process.argv[1]}` ||
+    import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}` ||
+    fileURLToPath(import.meta.url) === resolve(process.argv[1]) ||
+    process.argv[1].endsWith("mcp/dist/index.js") ||
+    process.argv[1].endsWith("mcp/src/index.ts")
+  )
+);
+
+if (isDirectRun) {
   const scopeArgIdx = process.argv.indexOf("--scope");
   const scopePath = scopeArgIdx !== -1 ? process.argv[scopeArgIdx + 1] : "./heimdall.scope.json";
   const server = new HeimdallMcpServer(scopePath);

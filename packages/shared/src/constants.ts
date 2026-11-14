@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Global Constants & Configuration Defaults
  */
 

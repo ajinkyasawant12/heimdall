@@ -1,4 +1,4 @@
-﻿# Heimdall CRS Architecture
+# Heimdall CRS Architecture
 
 > Status: Clean-room Autonomous AI Security Harness & Cyber Reasoning System.
 

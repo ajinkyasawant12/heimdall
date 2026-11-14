@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - 3-Axis Adaptive Verification Harness
  * Based on Google Harness² principles with strict 3-axis bounding.
  * Concurrently evaluates candidate strategies using Promise.allSettled with live telemetry sync.

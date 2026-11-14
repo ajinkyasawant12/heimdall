@@ -1,4 +1,4 @@
-﻿import { createHash, generateKeyPairSync, sign, verify } from 'node:crypto';
+import { createHash, generateKeyPairSync, sign, verify } from 'node:crypto';
 import type { ScopeManifest } from '@heimdall/shared';
 
 export interface ProposedAction {

@@ -1,4 +1,4 @@
-﻿import { request as httpsRequest } from "node:https";
+import { request as httpsRequest } from "node:https";
 import { request as httpRequest } from "node:http";
 
 export interface LLMRequest {

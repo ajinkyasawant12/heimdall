@@ -1,4 +1,4 @@
-﻿# Heimdall Security Workflows
+# Heimdall Security Workflows
 
 Heimdall CRS models security operations as Directed Acyclic Graphs (DAGs) composed of specialized agent roles:
 - **Auditor:** High-recall discovery, pattern recognition, and surface mapping.

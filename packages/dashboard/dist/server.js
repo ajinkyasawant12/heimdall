@@ -906,6 +906,20 @@ export function startServer() {
       return;
     }
 
+    if (url.pathname.startsWith("/assets/")) {
+      const rel = url.pathname.replace("/assets/", "");
+      const p1 = path.resolve(__dirname, "../../../assets", rel);
+      const p2 = path.resolve(__dirname, "../../assets", rel);
+      const target = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+      if (target) {
+        const ext = path.extname(target).toLowerCase();
+        const mime = ext === ".svg" ? "image/svg+xml" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : "application/octet-stream";
+        res.writeHead(200, { "Content-Type": mime });
+        res.end(fs.readFileSync(target));
+        return;
+      }
+    }
+
 
     if (url.pathname.startsWith("/assets/")) {
       const rel = url.pathname.replace("/assets/", "");

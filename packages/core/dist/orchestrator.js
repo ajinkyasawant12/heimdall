@@ -1,4 +1,4 @@
-﻿import { resolve } from "node:path";
+import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { FindingsStore, LearningStore, WorkflowStore, MerkleLedgerStore } from "@heimdall/db";
 import { ScopeGuard } from "./analysis/scope-guard.js";
@@ -9,6 +9,8 @@ import { RemediationPatchEngine } from "./remediation/patch-engine.js";
 import { DifferentialRegressionVerifier } from "./verification/regression-checker.js";
 import { Harness2RedTeamEngine } from "./redteam/harness2-engine.js";
 import { OpenShellPolicyProver } from "./harness/policy-prover.js";
+import { RogueAgentVerificationGate } from "./verification/rogue-agent-gate.js";
+import { AlphaProofSignalVerifier } from "./formal/alphaproof-signal-verifier.js";
 import { LearningService } from "./learning/learning-service.js";
 /**
  * Heimdall Master Autonomous Cyber Reasoning Orchestrator.
@@ -104,13 +106,19 @@ export class AutonomousCyberOrchestrator {
       this.redteamEngine.notarizeEvasionReceipt(canonicalTarget, harness, "finding-cycle-complete");
     }
 
-    // 5. Append Master Ledger Event & Notarize to Merkle Audit Ledger
-    this.merkleLedger.appendEvent("CRS_AUTO_CYCLE", projectId, {
-      targetPath: canonicalTarget,
-      hypotheses: rawHypotheses.length,
-      confirmed: confirmedCount,
-      patched: patchedCount
-    });
+    // 4B. Execute 4-Layer OpenShell + AlphaProof Rogue Agent Verification Gate & Signal Ratchet
+    const rogueGate = new RogueAgentVerificationGate({
+      version: "2.0.0",
+      allowedRootPaths: [canonicalTarget, process.cwd()],
+      allowedBinaries: ["node", "npm", "npx", "git", "z3"],
+      maxSubprocessTimeoutMs: 5000,
+      allowNetworkInSandbox: false
+    }, this.merkleLedger, this.learningStore);
+    const rogueSummary = rogueGate.runRogueCatchingBenchmark(canonicalTarget);
+    const alphaVerifier = new AlphaProofSignalVerifier(this.merkleLedger);
+    const alphaReport = alphaVerifier.runVerificationSuite();
+
+    // 5. Append Master Ledger Event
     this.learningService.recordEvent({
       idempotencyKey: `master-cycle-${Date.now()}`,
       projectId,
@@ -124,7 +132,7 @@ export class AutonomousCyberOrchestrator {
       projectId,
       category: "verification",
       outcome: "success",
-      summary: `Confirmed ${confirmedCount} reproducible vulnerabilities and verified ${patchedCount} surgical patches on ${canonicalTarget}.`,
+      summary: `Confirmed ${confirmedCount} PoVs, quarantined ${rogueSummary.rogueAgentsQuarantined} rogue agent actions across 4 layers, and verified ${alphaReport.theoremsVerified.length} AlphaProof/Signal theorems.`,
       strength: "verified"
     });
     await this.learningService.tick();
@@ -134,6 +142,8 @@ export class AutonomousCyberOrchestrator {
       confirmedVulnerabilities: confirmedCount,
       patchesVerified: patchedCount,
       harnessRevision: harness.revision,
+      rogueAgentsQuarantined: rogueSummary.rogueAgentsQuarantined,
+      alphaProofTheoremsVerified: alphaReport.theoremsVerified.length,
       findings: finalFindings,
       durationMs: Date.now() - startTime
     };

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Surgical Patch Engine
  * Synthesizes minimal, byte-accurate unified diffs targeting the exact AST slice.
  */

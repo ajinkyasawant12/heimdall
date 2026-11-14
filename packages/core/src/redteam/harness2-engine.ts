@@ -1,4 +1,4 @@
-﻿import { randomUUID, createHash } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import type { LearningStore } from "@heimdall/db";
 import type { ScopeGuard } from "../analysis/scope-guard.js";
 

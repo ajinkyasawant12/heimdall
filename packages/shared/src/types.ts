@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Master Domain Types & Contracts
  * Compliant with Big 4 Security Audit Specification (AGENTS.md)
  */
@@ -98,7 +98,9 @@ export type RogueAgentViolationType =
   | 'GUARDRAIL_SELF_MODIFICATION'
   | 'ROLE_PRIVILEGE_ESCALATION'
   | 'TROJAN_PATCH_BACKDOOR'
-  | 'ANTI_CHEAT_TEST_TAMPERING';
+  | 'ANTI_CHEAT_TEST_TAMPERING'
+  | 'ALPHAPROOF_VACUOUS_SPEC_WEAKENING'
+  | 'SIGNAL_RATCHET_REPLAY_OR_REVOKED_KEY';
 
 export interface RogueAgentActionProposal {
   id: string;
@@ -119,7 +121,7 @@ export interface RogueInterceptVerdict {
   agentId: string;
   agentRole: string;
   status: 'APPROVED_SAFE' | 'QUARANTINED_ROGUE';
-  blockedByLayer?: 'LAYER_1_OPENSHELL_KERNEL_FENCE' | 'LAYER_2_Z3_CEDAR_POLICY_PROVER' | 'LAYER_3_AST_BACKDOOR_GATE';
+  blockedByLayer?: 'LAYER_1_OPENSHELL_KERNEL_FENCE' | 'LAYER_2_Z3_CEDAR_POLICY_PROVER' | 'LAYER_3_AST_BACKDOOR_GATE' | 'LAYER_4_ALPHAPROOF_AND_SIGNAL_RATCHET_GATE';
   violationType?: RogueAgentViolationType;
   formalProofPredicate: string;
   smtStatus: 'UNSAT_SAFE' | 'SAT_VIOLATION_WITNESS';
@@ -128,4 +130,29 @@ export interface RogueInterceptVerdict {
   ed25519ReceiptSig: string;
   merkleEntryHash?: string;
   evaluatedAt: string;
+}
+
+export interface SignalRatchetStepReceipt {
+  epoch: number;
+  stepIndex: number;
+  agentId: string;
+  ephemeralMessageKeyId: string;
+  rootKeyFingerprint: string;
+  chainKeyFingerprint: string;
+  pqKemEncapsulationId: string;
+  forwardSecrecyZeroized: boolean;
+  postCompromiseHealed: boolean;
+  storeTransactionState: 'COMMITTED_ATOMIC' | 'ROLLED_BACK_ZERO_WRITES';
+}
+
+export interface AlphaProofVerificationReport {
+  theoremId: string;
+  targetComponent: string;
+  heldOutComparatorPassed: boolean;
+  vacuityCheckPassed: boolean;
+  hypothesisSatisfiable: 'SAT_NON_VACUOUS' | 'UNSAT_VACUOUS_CHEAT';
+  securityTheoremProof: 'UNSAT_PROVED' | 'SAT_COUNTEREXAMPLE_FOUND';
+  mutationDisproofCaughtBug: boolean;
+  criticVerdict: 'APPROVED_BY_GATEKEEPER' | 'REJECTED_SPEC_GAMING';
+  leanKernelSummary: string;
 }

@@ -1,4 +1,4 @@
-﻿import { randomUUID, createHash } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { LearningStore, LearningWorkItem } from "@heimdall/db";

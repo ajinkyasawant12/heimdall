@@ -31,3 +31,4 @@ export * from "./trajectory/trajectory-cache.js";
 export * from "./trajectory/plan-controller.js";
 export * from "./orchestrator.js";
 export * from "./verification/rogue-agent-gate.js";
+export * from "./formal/alphaproof-signal-verifier.js";

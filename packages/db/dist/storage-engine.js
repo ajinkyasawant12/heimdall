@@ -1,5 +1,6 @@
-﻿import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { homedir } from "node:os";
 
 /**
  * Atomic persistent document store.
@@ -41,6 +42,9 @@ export class PersistentStore {
       writeFileSync(this.filePath, JSON.stringify(records, null, 2), "utf-8");
     } finally {
       try {
+        const {
+          unlinkSync
+        } = require("node:fs");
         unlinkSync(tempPath);
       } catch {}
     }
@@ -66,5 +70,6 @@ export class PersistentStore {
   }
 }
 export function getDefaultHeimdallDbDir() {
-  return process.env["HEIMDALL_DATA_DIR"] || join(process.cwd(), ".aegis", "data");
+  const home = homedir();
+  return process.env["HEIMDALL_DATA_DIR"] || join(home, ".aegis", "data");
 }

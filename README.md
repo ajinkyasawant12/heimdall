@@ -1,4 +1,4 @@
-﻿# Heimdall CRS - Autonomous AI Security Harness & Cyber Reasoning System
+# Heimdall CRS - Autonomous AI Security Harness & Cyber Reasoning System
 
 **Heimdall CRS** is a fully customized, clean-room Autonomous AI Security Harness and Cyber Reasoning System (CRS). It coordinates parallel security reasoning, multi-lens vulnerability detection, deterministic Proof-of-Vulnerability (PoV) verification, automated surgical remediation, and a source-grounded evolutionary learning harness.
 

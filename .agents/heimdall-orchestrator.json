@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "aegis",
   "displayName": "Heimdall CRS Master Orchestrator",
   "description": "Master coordinator for GitHub Copilot Chat and Cloud Code. Automatically orchestrates Recon, Prover, Tester, Patcher, and Auditor agents.",

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Security Workflows & Execution Graph Contracts
  */
 

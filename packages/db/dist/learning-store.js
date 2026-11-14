@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { PersistentStore, getDefaultHeimdallDbDir } from "./storage-engine.js";
 export class LearningStore {
   eventsStore;

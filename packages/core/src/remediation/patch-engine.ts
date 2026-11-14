@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import type { SecurityFinding, ProposedPatch } from "@heimdall/shared";
 import { PoVVerificationEngine } from "../verification/pov-engine.js";
 

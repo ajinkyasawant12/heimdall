@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Deterministic AST Slicer
  * Based on Graham Helton's Unprompted Harness Engineering.
  * Replaces stochastic line-guessing with byte-accurate syntactic boundary slicing.

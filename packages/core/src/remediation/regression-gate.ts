@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Differential Regression & Anti-Cheat Patch Gate
  * Rejects "cheat patches" that pass tests by deleting routes, stripping exports,
  * or introducing empty catch {} blocks.

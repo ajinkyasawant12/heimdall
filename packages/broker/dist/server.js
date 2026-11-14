@@ -1,6 +1,4 @@
-﻿#!/usr/bin/env node
-import { pathToFileURL } from "node:url";
-import { resolve as resolveEntryPath } from "node:path";
+#!/usr/bin/env node
 /**
  * Heimdall CRS - Out-of-Process Host Policy Broker Daemon
  * Enforces zero-trust kernel containment, symlink-safe realpath checks,
@@ -8,6 +6,8 @@ import { resolve as resolveEntryPath } from "node:path";
  */
 
 import { createServer } from 'node:http';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { HostScopeGuard } from './scope-guard.js';
 import { FormalPolicyProver } from './policy-prover.js';
 import { runSandboxedBinary } from './safe-exec.js';
@@ -108,7 +108,17 @@ export class BrokerDaemon {
     return this.policyProver?.publicKeyPem ?? '';
   }
 }
-if (process.argv[1] && import.meta.url === pathToFileURL(resolveEntryPath(process.argv[1])).href) {
+const isDirectRun = Boolean(
+  process.argv[1] && (
+    import.meta.url === `file://${process.argv[1]}` ||
+    import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}` ||
+    fileURLToPath(import.meta.url) === resolve(process.argv[1]) ||
+    process.argv[1].endsWith("broker/dist/server.js") ||
+    process.argv[1].endsWith("broker/src/server.ts")
+  )
+);
+
+if (isDirectRun) {
   const daemon = new BrokerDaemon();
   daemon.start().then(port => {
     console.log(`[+] Heimdall Host Policy Broker Daemon listening on 127.0.0.1:${port}`);

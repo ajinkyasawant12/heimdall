@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "auditor",
   "displayName": "Auditor Agent (Cryptographic Merkle Notary & Ed25519 Signer)",
   "persona": {

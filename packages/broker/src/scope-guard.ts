@@ -1,4 +1,4 @@
-﻿import { readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { ScopeManifest } from '@heimdall/shared';
 import { assertPathInScope } from './safe-exec.js';

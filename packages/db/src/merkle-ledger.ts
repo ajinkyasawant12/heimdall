@@ -1,6 +1,9 @@
-import { createHash, generateKeyPairSync, sign, verify } from 'node:crypto';
+import { createHash, createPrivateKey, generateKeyPairSync, sign, verify, type KeyObject } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 export interface AuditLedgerRow {
   seq: number;
@@ -16,7 +19,7 @@ export interface AuditLedgerRow {
 export class MerkleLedgerStore {
   private db: any = null;
   private fallbackMemoryRows: AuditLedgerRow[] = [];
-  private privateKey: ReturnType<typeof generateKeyPairSync>['privateKey'];
+  private privateKey: KeyObject;
   public readonly publicKeyPem: string;
   public readonly dbPath: string;
 
@@ -27,14 +30,23 @@ export class MerkleLedgerStore {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    const kp = generateKeyPairSync('ed25519');
-    this.privateKey = kp.privateKey;
-    this.publicKeyPem = kp.publicKey.export({ type: 'spki', format: 'pem' }).toString();
+    const keyFile = path.join(dir, 'ed25519-keypair.json');
+    if (fs.existsSync(keyFile)) {
+      const saved = JSON.parse(fs.readFileSync(keyFile, 'utf8')) as { privPem: string; pubPem: string };
+      this.privateKey = createPrivateKey(saved.privPem);
+      this.publicKeyPem = saved.pubPem;
+    } else {
+      const kp = generateKeyPairSync('ed25519');
+      const privPem = kp.privateKey.export({ type: 'pkcs8', format: 'pem' }).toString();
+      const pubPem = kp.publicKey.export({ type: 'spki', format: 'pem' }).toString();
+      fs.writeFileSync(keyFile, JSON.stringify({ privPem, pubPem }, null, 2), 'utf8');
+      this.privateKey = kp.privateKey;
+      this.publicKeyPem = pubPem;
+    }
 
     try {
-      // Node 22.5+ native node:sqlite DatabaseSync
       const sqlite = require('node:sqlite');
-      if (sqlite.DatabaseSync) {
+      if (sqlite && sqlite.DatabaseSync) {
         this.db = new sqlite.DatabaseSync(dbPath);
         this.db.exec(`
           PRAGMA journal_mode = WAL;
@@ -52,44 +64,27 @@ export class MerkleLedgerStore {
         `);
       }
     } catch {
-      // In-memory / file fallback for environments where node:sqlite is disabled
       this.db = null;
       this.loadFallbackDisk();
     }
   }
 
   private loadFallbackDisk(): void {
-    const candidates = [
-      this.dbPath.replace(/\.db$/, '.json'),
-      process.env['HEIMDALL_DATA_DIR'] ? path.join(process.env['HEIMDALL_DATA_DIR'], 'merkle-ledger.json') : null,
-      'C:/Users/Ajinkya/Desktop/heimdall/.aegis/data/merkle-ledger.json',
-      path.resolve(process.cwd(), '.aegis/data/merkle-ledger.json'),
-      path.resolve(process.cwd(), '../../.aegis/data/merkle-ledger.json')
-    ].filter(Boolean) as string[];
-
-    for (const jsonPath of candidates) {
-      if (fs.existsSync(jsonPath)) {
-        try {
-          const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            this.fallbackMemoryRows = parsed;
-            return;
-          }
-        } catch {
-          // try next
-        }
+    const jsonPath = this.dbPath.replace(/\.db$/, '.json');
+    if (fs.existsSync(jsonPath)) {
+      try {
+        this.fallbackMemoryRows = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      } catch {
+        this.fallbackMemoryRows = [];
       }
     }
-    this.fallbackMemoryRows = [];
   }
 
   private saveFallbackDisk(): void {
     const jsonPath = this.dbPath.replace(/\.db$/, '.json');
     try {
       fs.writeFileSync(jsonPath, JSON.stringify(this.fallbackMemoryRows, null, 2), 'utf8');
-    } catch {
-      // Ignore fallback write errors
-    }
+    } catch {}
   }
 
   public appendEvent(eventType: string, fileSha256: string, payload: unknown): {
@@ -107,6 +102,7 @@ export class MerkleLedgerStore {
         prevHash = lastRow.entry_hash;
       }
     } else {
+      this.loadFallbackDisk();
       if (this.fallbackMemoryRows.length > 0) {
         prevHash = this.fallbackMemoryRows[this.fallbackMemoryRows.length - 1].entry_hash;
       }
@@ -149,10 +145,9 @@ export class MerkleLedgerStore {
 
   public getRows(): AuditLedgerRow[] {
     if (this.db) {
-      const rows = this.db
+      return this.db
         .prepare('SELECT * FROM audit_ledger ORDER BY seq ASC')
         .all() as AuditLedgerRow[];
-      if (rows && rows.length > 0) return rows;
     }
     this.loadFallbackDisk();
     return [...this.fallbackMemoryRows];

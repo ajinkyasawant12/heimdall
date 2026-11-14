@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Heimdall CRS - Trajectory Caching & Plan Controller Schemas
  * Inspired by enterprise trajectory reuse patterns, implemented natively for
  * formal vulnerability remediation and cryptographic ledger caching.

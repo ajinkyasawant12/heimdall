@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { Harness2RedTeamEngine, type Harness2Scaffolding } from "../redteam/harness2-engine.js";
 import { OpenShellPolicyProver, type PolicyProofCertificate } from "../harness/policy-prover.js";
 import { NvidiaOpenShellSandbox, type SandboxExecutionResult } from "../harness/openshell-sandbox.js";

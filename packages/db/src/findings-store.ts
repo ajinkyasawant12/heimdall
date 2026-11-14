@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { PersistentStore, getDefaultHeimdallDbDir } from "./storage-engine.js";
 import type {
   SecurityFinding,
@@ -16,11 +16,11 @@ export class FindingsStore {
     this.store = new PersistentStore<SecurityFinding>(dbDir, "findings");
   }
 
-  create(finding: Omit<SecurityFinding, "id" | "createdAt" | "updatedAt">): SecurityFinding {
+  create(finding: Omit<SecurityFinding, "id" | "createdAt" | "updatedAt"> & { id?: string }): SecurityFinding {
     const now = new Date().toISOString();
     const record: SecurityFinding = {
       ...finding,
-      id: randomUUID(),
+      id: finding.id ?? randomUUID(),
       lifecycleState: 'hypothesis',
       createdAt: now,
       updatedAt: now

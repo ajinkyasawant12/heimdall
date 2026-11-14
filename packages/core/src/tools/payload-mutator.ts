@@ -1,4 +1,4 @@
-﻿export class AdversarialPayloadMutator {
+export class AdversarialPayloadMutator {
   /**
    * Homoglyph substitution: replaces Latin characters with identical-looking Cyrillic/Greek glyphs
    * to bypass naive regex and keyword content filters.
